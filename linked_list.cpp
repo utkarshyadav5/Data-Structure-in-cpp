@@ -288,6 +288,50 @@ public:
         temp->next=head;
         head=temp;
     }
+
+    Node* alternateDelete(){
+        Node* newNode=head;
+        Node* temp;
+        while(newNode && newNode->next){
+            temp=newNode->next;
+            newNode->next=temp->next;
+            delete(temp);
+            newNode=newNode->next;
+        }
+    }
+
+    void alternate_split(){
+        Node* a=head;
+        Node* b=head->next;
+
+        Node* head_a=a;
+        Node* head_b=b;
+
+        while(a && b){
+            a->next=b->next;
+            if(a->next)
+                b->next=a->next->next;
+            else{
+                b->next=NULL;
+                break;
+            }
+            a=a->next;
+            b=b->next;
+        }
+
+
+        while(head_a){
+            cout<<head_a->data<<" -> ";
+            head_a=head_a->next;
+        }
+        cout<<endl;
+        while(head_b){
+            cout<<head_b->data<<" -> ";
+            head_b=head_b->next;
+        }
+        cout<<endl;
+    }
+
 };
 
 LinkedList l1,l2,l3;
@@ -373,16 +417,18 @@ LinkedList l1,l2,l3;
 
 
 int main(){
-    // l1.InsertAtFront(6);
-    // l1.InsertAtFront(5);
-    // l1.InsertAtFront(4);
-    // l1.InsertAtFront(3);
-    // l1.InsertAtFront(2);
-    // l1.InsertAtFront(1);
+    l1.InsertAtFront(6);
+    l1.InsertAtFront(5);
+    l1.InsertAtFront(4);
+    l1.InsertAtFront(3);
+    l1.InsertAtFront(2);
+    l1.InsertAtFront(1);
     // l1.InsertAtMiddle(4,3);
     // l1.InsertAtMiddle(6,5);
     // l1.InsertAtEnd(7);
     // l1.InsertAtEnd(8);
+    l1.print();
+    l1.alternate_split();
     //l1.print();
     //l1.pairwise_swap();
     //l1.lastTofirst();
@@ -417,19 +463,19 @@ int main(){
 
     //for intersection - --------
 
-    l1.InsertAtEnd(1);
-    l1.InsertAtEnd(2);
-    l1.InsertAtEnd(3);
-    l1.InsertAtEnd(4);
-    l1.InsertAtEnd(6);
-    l2.InsertAtEnd(2);
-    l2.InsertAtEnd(4);
-    l2.InsertAtEnd(6);
-    l2.InsertAtEnd(8);
-    l1.print();
-    l2.print();
-    l3.head=intersection(l1.head,l2.head);
-    l3.print();
+    // l1.InsertAtEnd(1);
+    // l1.InsertAtEnd(2);
+    // l1.InsertAtEnd(3);
+    // l1.InsertAtEnd(4);
+    // l1.InsertAtEnd(6);
+    // l2.InsertAtEnd(2);
+    // l2.InsertAtEnd(4);
+    // l2.InsertAtEnd(6);
+    // l2.InsertAtEnd(8);
+    // l1.print();
+    // l2.print();
+    // l3.head=intersection(l1.head,l2.head);
+    // l3.print();
     //for finding intersection ------
 
     // l2.InsertAtFront(10);
