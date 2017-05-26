@@ -13,6 +13,10 @@ public:
     Node(int value): data(value),next(NULL),visited(false){}
     friend class LinkedList;
     friend Node* merge(Node* ,Node*);
+    friend void Insert(int d1,int d2);
+    friend void get_intersection(Node* a, Node* b);
+    friend int recursive_len(Node* t1);
+    friend Node* intersection(Node* t1,Node* t2);
 };
 
 class LinkedList{
@@ -233,7 +237,103 @@ public:
         }
         cout<<"Loop Not found"<<endl;
     }
+
+    void deleteUnknown(Node* unknown){
+        Node* temp=unknown->next;
+        unknown=temp;
+        delete(temp);
+    }
+
+    void print_reverse(Node* head){
+        if(head==NULL)
+            return;
+
+        print_reverse(head->next);
+        cout<<head->data<<" -> ";
+    }
+
+    void print_reverse_helper(){
+        print_reverse(head);
+    }
+
+    void remove_duplicates(){
+        Node* temp=head;
+        while(temp->next){
+            if(temp->data==temp->next->data){
+                Node* newNode=temp->next;
+                temp->next=newNode->next;
+                delete(newNode);
+            }
+            else
+                temp=temp->next;
+        }
+    }
+
+    void pairwise_swap(){
+        Node* temp=head;
+        while(temp && temp->next){
+            swap(temp->data,temp->next->data);
+            temp=temp->next->next;
+        }
+    }
+
+    void lastTofirst(){
+        Node* temp=head;
+        Node* prev;
+        while(temp->next){
+            prev=temp;
+            temp=temp->next;
+        }
+        prev->next=NULL;
+        temp->next=head;
+        head=temp;
+    }
 };
+
+LinkedList l1,l2,l3;
+
+    void Insert(int data1,int data2){
+        Node* newNode1=new Node(data1);
+        Node* newNode2=new Node(data2);
+        l1.head=newNode1;
+        newNode1->next=newNode2;
+
+        Node* temp=l2.head;
+        temp->next=newNode1;
+    }
+
+    int recursive_len(Node* t1){
+        if(t1==NULL)
+            return 0;
+
+        return 1+recursive_len(t1->next);
+    }
+
+    void get_intersection(Node* t1,Node* t2){
+        int len1=recursive_len(t1);
+        int len2=recursive_len(t2);
+
+        int diff=len1-len2;
+
+        if(diff>0){
+            while(diff){
+                t1=t1->next;
+                diff--;
+            }
+        }
+        else{
+            diff=abs(diff);
+            while(diff){
+                t2=t2->next;
+                diff--;
+            }
+        }
+        while(t1->data!=t2->data){
+            t1=t1->next;
+            t2=t2->next;
+        }
+        cout<<t1->data<<endl;
+    }
 
     Node* merge(Node *t1,Node *t2){
         Node* result=NULL;
@@ -253,10 +353,29 @@ public:
         return result;
     }
 
+    Node* intersection(Node* t1,Node* t2){
+        Node* result;
+        if(t1==NULL || t2==NULL)
+            return NULL;
+
+        if(t1->data==t2->data){
+            result=t1;
+            result->next=intersection(t1->next,t2->next);
+        }
+        else if(t1->data<t2->data){
+            return intersection(t1->next,t2);
+        }
+        else
+            return intersection(t1,t2->next);
+
+        return result;
+    }
+
 
 int main(){
-    LinkedList l1,l2,l3;
+    // l1.InsertAtFront(6);
     // l1.InsertAtFront(5);
+    // l1.InsertAtFront(4);
     // l1.InsertAtFront(3);
     // l1.InsertAtFront(2);
     // l1.InsertAtFront(1);
@@ -264,7 +383,10 @@ int main(){
     // l1.InsertAtMiddle(6,5);
     // l1.InsertAtEnd(7);
     // l1.InsertAtEnd(8);
-    // l1.print();
+    //l1.print();
+    //l1.pairwise_swap();
+    //l1.lastTofirst();
+    //l1.print();
     // l1.length_helper();
     // l1.deleteNode(3);
     //l1.swapNode(1,6);
@@ -276,7 +398,9 @@ int main(){
     //l1.print();
     //l1.loop_maker();
     // l1.loop();
-
+    //l1.remove_duplicates();
+    //l1.print();
+    //l1.print_reverse_helper();
     //for merge ----------------
     // l1.InsertAtFront(7);
     // l1.InsertAtFront(4);
@@ -290,6 +414,33 @@ int main(){
     // l3.head=merge(l1.head,l2.head);
     // l3.print();
     //end of merge --------------
+
+    //for intersection - --------
+
+    l1.InsertAtEnd(1);
+    l1.InsertAtEnd(2);
+    l1.InsertAtEnd(3);
+    l1.InsertAtEnd(4);
+    l1.InsertAtEnd(6);
+    l2.InsertAtEnd(2);
+    l2.InsertAtEnd(4);
+    l2.InsertAtEnd(6);
+    l2.InsertAtEnd(8);
+    l1.print();
+    l2.print();
+    l3.head=intersection(l1.head,l2.head);
+    l3.print();
+    //for finding intersection ------
+
+    // l2.InsertAtFront(10);
+    // Insert(15,30);
+    // l1.InsertAtFront(9);
+    // l1.InsertAtFront(6);
+    // l1.InsertAtFront(3);
+
+    // get_intersection(l1.head,l2.head);
+
+    //end of intersection   ---------
     return 0;
 }
 
