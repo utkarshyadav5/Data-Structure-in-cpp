@@ -7,15 +7,17 @@ class LinkedList;
 class Node{
     int data;
     Node* next;
+    bool visited;
 public:
-    Node(): data(0),next(NULL){}
-    Node(int value): data(value),next(NULL){}
+    Node(): data(0),next(NULL),visited(false){}
+    Node(int value): data(value),next(NULL),visited(false){}
     friend class LinkedList;
+    friend Node* merge(Node* ,Node*);
 };
 
 class LinkedList{
-    Node* head;
 public:
+    Node* head;
     LinkedList(): head(NULL){}
 
     void print(){
@@ -172,27 +174,122 @@ public:
         cout<<"Nth from end is "<<main_ptr->data<<endl;
     }
 
+    void reverse(){
+        Node* prev=NULL;
+        Node* curr=head;
+        Node* nxt;
+
+        while(curr){
+            nxt=curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=nxt;
+        }
+        head=prev;
+    }
+
+    void recursive_reverse(Node** head){
+        if(*head==NULL)
+            return;
+
+        Node* first=*head;
+        Node* rest=first->next;
+
+        if(rest==NULL)
+            return;
+
+        recursive_reverse(&rest);
+        first->next->next=first;
+
+        first->next=NULL;
+
+        *head=rest;
+    }
+
+    void reverse_helper(){
+        recursive_reverse(&head);
+    }
+
+    void loop_maker(){                          //fxn for making loop
+        Node* temp=head;
+        Node* newtemp;
+        newtemp=temp->next->next;
+        while(temp->next){
+            temp=temp->next;
+        }
+        temp->next=newtemp;
+    }
+
+    void loop(){
+        Node* temp=head;
+
+        while(temp && temp->visited!=true){
+            temp->visited=true;
+            temp=temp->next;
+            if(temp && temp->visited==true){
+                cout<<"Loop found"<<endl;
+                return;
+            }
+        }
+        cout<<"Loop Not found"<<endl;
+    }
 };
+
+    Node* merge(Node *t1,Node *t2){
+        Node* result=NULL;
+        if(t1==NULL)
+            return t2;
+        if(t2==NULL)
+            return t1;
+
+        if(t1->data<=t2->data){
+            result=t1;
+            result->next=merge(t1->next,t2);
+        }
+        else{
+            result=t2;
+            result->next=merge(t1,t2->next);
+        }
+        return result;
+    }
 
 
 int main(){
-    LinkedList l1;
-    l1.InsertAtFront(5);
-    l1.InsertAtFront(3);
-    l1.InsertAtFront(2);
-    l1.InsertAtFront(1);
-    l1.InsertAtMiddle(4,3);
-    l1.InsertAtMiddle(6,5);
-    l1.InsertAtEnd(7);
-    l1.InsertAtEnd(8);
-    l1.print();
-    l1.length_helper();
+    LinkedList l1,l2,l3;
+    // l1.InsertAtFront(5);
+    // l1.InsertAtFront(3);
+    // l1.InsertAtFront(2);
+    // l1.InsertAtFront(1);
+    // l1.InsertAtMiddle(4,3);
+    // l1.InsertAtMiddle(6,5);
+    // l1.InsertAtEnd(7);
+    // l1.InsertAtEnd(8);
+    // l1.print();
+    // l1.length_helper();
     // l1.deleteNode(3);
     //l1.swapNode(1,6);
     //l1.print();
-    l1.getNth(5);
-    l1.middle();
-    l1.nthFromEnd(6);
+    // l1.getNth(5);
+    // l1.middle();
+    // l1.nthFromEnd(6);
+    //l1.reverse_helper();
+    //l1.print();
+    //l1.loop_maker();
+    // l1.loop();
+
+    //for merge ----------------
+    // l1.InsertAtFront(7);
+    // l1.InsertAtFront(4);
+    // l1.InsertAtFront(3);
+    // l1.InsertAtFront(1);
+    // l2.InsertAtFront(8);
+    // l2.InsertAtFront(5);
+    // l2.InsertAtFront(2);
+    // l1.print();
+    // l2.print();
+    // l3.head=merge(l1.head,l2.head);
+    // l3.print();
+    //end of merge --------------
     return 0;
 }
 
