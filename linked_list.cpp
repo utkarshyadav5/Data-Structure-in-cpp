@@ -19,6 +19,7 @@ public:
     friend Node* intersection(Node* t1,Node* t2);
     friend Node* mergeSort(Node* t1);
     friend void FrontBackSplit(Node* t1,Node** a,Node** b);
+    friend Node* mergeAlt(Node* t1,Node* t2,int val);
 };
 
 class LinkedList{
@@ -440,6 +441,119 @@ public:
             head=odd_head;
     }
 
+    void detectAndRemoveLoop(){
+        Node* slow=head;
+        Node* fast=head;
+
+        while(fast && fast->next){
+            if(slow==fast)
+                break;
+            slow=slow->next;
+            fast=fast->next->next;
+        }
+
+        if(slow==fast){
+            slow=head;
+            while(slow != fast->next){
+                slow=slow->next;
+                fast=fast->next;
+            }
+            fast->next=NULL;
+        }
+    }
+
+    void rotate(int k){
+        Node* temp=head;
+        Node* newNode;
+        Node* tail;
+
+        while(temp->next)
+            temp=temp->next;
+
+        tail=temp;
+
+        while(k){
+            temp=head;
+            newNode=temp;
+            head=temp->next;
+            tail->next=newNode;
+            newNode->next=NULL;
+            tail=tail->next;
+            k--;
+        }
+    }
+
+    Node* add(Node* t1,Node* t2,int carry){
+        Node* result;
+        int a,b,sum;
+        if(t1==NULL && t2==NULL && carry==0)
+            return NULL;
+        else if(t1==NULL && t2==NULL && carry){
+            a=0;
+            b=0;
+        }
+        else if(t1==NULL && t2){
+            a=0;
+            b=t2->data;
+        }
+        else if(t1 && t2==NULL){
+            a=t1->data;
+            b=0;
+        }
+        else{
+            a=t1->data;
+            b=t2->data;
+        }
+        sum=a+b+carry;
+        if(sum>9){
+            sum=sum%10;
+            carry=1;
+        }
+        else{
+            carry=0;
+        }
+
+        result=new Node(sum);
+        if(t1->next && t2->next)
+            result->next=add(t1->next,t2->next,carry);
+        else if(t1->next && t2->next==NULL)
+            result->next=add(t1->next,t2,carry);
+        else if(t2->next && t1->next==NULL)
+            result->next=add(t1,t2->next,carry);
+        return result;
+    }
+
+    Node* add_helper(Node* t1,Node* t2){
+        recursive_reverse(&t1);
+        recursive_reverse(&t2);
+        Node* sum;
+        sum=add(t1,t2,0);
+        recursive_reverse(&sum);
+        return sum;
+    }
+
+    Node* deleteMN(int m,int n){
+        Node* temp=head;
+        Node* prev;
+        Node* newNode;
+        while(temp){
+            int count=0;
+            while(temp && count<m){
+                prev=temp;
+                temp=temp->next;
+                count++;
+            }
+            count=0;
+            while(temp && count<n){
+                newNode=temp;
+                temp=temp->next;
+                prev->next=temp;
+                delete(newNode);
+                count++;
+            }
+        }
+    }
+
 };
 
 LinkedList l1,l2,l3;
@@ -548,29 +662,52 @@ LinkedList l1,l2,l3;
         return merge(mergeSort(a),mergeSort(b));
     }
 
+    Node* mergeAlt(Node* t1,Node* t2,int val){
+        Node* result;
+        if(t1==NULL)
+            return t2;
+        if(t2==NULL)
+            return t1;
+
+        if(val){
+            result=t1;
+            result->next=mergeAlt(t1->next,t2,0);
+        }
+        else{
+            result=t2;
+            result->next=mergeAlt(t1,t2->next,1);
+        }
+        return result;
+    }
 
 int main(){
-    // l1.InsertAtFront(6);
-    l1.InsertAtFront(1);
-    //l1.InsertAtFront(4);
+    l1.InsertAtFront(7);
+    l1.InsertAtFront(6);
     l1.InsertAtFront(5);
-    // l1.InsertAtFront(10);
-    // l1.InsertAtFront(12);
-    // l1.InsertAtFront(8);
-    //l1.InsertAtFront(15);
-    l1.InsertAtFront(17);
+    l1.InsertAtFront(4);
+    l1.InsertAtFront(3);
+    l1.InsertAtFront(2);
+    l1.InsertAtFront(1);
+    l1.print();
+    l1.head=l1.kReverse(l1.head,2);
+    //l3.head=mergeAlt(l1.head,l2.head,1);
+    //l1.rotate(4);
+    //l2.print();
+    //l1.deleteMN(3,2);
+    //l3.head=l3.add_helper(l1.head,l2.head);
+    l1.print();
     // l1.InsertAtMiddle(4,3);
     // l1.InsertAtMiddle(6,5);
     // l1.InsertAtEnd(7);
     // l1.InsertAtEnd(8);
-    l1.print();
+    //l1.print();
     // l1.head=l1.kReverse(l1.head,3);
     // l1.print();
     // l1.head=l1.kReverse(l1.head,3);
     // l1.print();
     // l1.head=l1.kAltReverse(l1.head,3);
-    l1.Segregate();
-    l1.print();
+    //l1.Segregate();
+    //l1.print();
     //l1.print();
     //l1.pairwise_swap();
     //l1.lastTofirst();
