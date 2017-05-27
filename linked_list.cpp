@@ -17,6 +17,8 @@ public:
     friend void get_intersection(Node* a, Node* b);
     friend int recursive_len(Node* t1);
     friend Node* intersection(Node* t1,Node* t2);
+    friend Node* mergeSort(Node* t1);
+    friend void FrontBackSplit(Node* t1,Node** a,Node** b);
 };
 
 class LinkedList{
@@ -332,6 +334,112 @@ public:
         cout<<endl;
     }
 
+    Node* kReverse(Node* head,int k){
+        Node* current=head;
+        Node* prev=NULL;
+        Node* next;
+        int count=0;
+
+        while(current && count<k){
+            next=current->next;
+            current->next=prev;
+            prev=current;
+            current=next;
+            count++;
+        }
+
+        if(current)
+            head->next=kReverse(current,k);
+
+        return prev;
+    }
+
+    Node* kAltReverse(Node* head,int k){
+        Node* current=head;
+        Node* prev=NULL;
+        Node* nxt;
+        int count=0;
+
+        while(current && count<k){
+            nxt=current->next;
+            current->next=prev;
+            prev=current;
+            current=nxt;
+            count++;
+        }
+        if(head)
+            head->next=current;
+
+        count=0;
+        while(count<(k-1) && current){
+            current=current->next;
+            count++;
+        }
+
+        if(current)
+            current->next=kReverse(current->next,k);
+
+        return prev;
+    }
+
+    void DeleteSmaller(){
+        reverse();
+        Node* temp=head;
+        int maxm=head->data;
+        while(temp->next){
+            if(temp->next->data < temp->data){
+                Node* newNode=temp->next;
+                temp->next=newNode->next;
+                delete(newNode);
+            }
+            else{
+                temp=temp->next;
+                maxm=temp->data;
+            }
+        }
+        reverse();
+    }
+
+    void Segregate(){
+        Node* temp=head;
+        Node* even;
+        Node* odd;
+        Node* odd_head;
+
+        bool even_v=false,odd_v=false;
+
+        while(temp){
+            if(temp->data%2==0){
+                if(!even_v){
+                    even_v=true;
+                    head=temp;
+                    even=temp;
+                }
+                else{
+                    even->next=temp;
+                    even=even->next;
+                }
+            }
+            else{
+                if(!odd_v){
+                    odd_v=true;
+                    odd_head=temp;
+                    odd=temp;
+                }
+                else{
+                    odd->next=temp;
+                    odd=odd->next;
+                }
+            }
+            temp=temp->next;
+        }
+        odd->next=NULL;
+        if(even)
+            even->next=odd_head;
+        else
+            head=odd_head;
+    }
+
 };
 
 LinkedList l1,l2,l3;
@@ -415,20 +523,54 @@ LinkedList l1,l2,l3;
         return result;
     }
 
+    void FrontBackSplit(Node* t1,Node** a,Node** b){
+        Node* slow=t1;
+        Node* fast=t1;
+        Node* prev;
+        while(fast && fast->next){
+            prev=slow;
+            fast=fast->next->next;
+            slow=slow->next;
+        }
+        *a=t1;
+        prev->next=NULL;
+        *b=slow;
+    }
+
+    Node* mergeSort(Node* t1){
+        Node* a;
+        Node* b;
+        if(t1==NULL)
+            return NULL;
+        else if(t1->next==NULL)
+            return t1;
+        FrontBackSplit(t1,&a,&b);
+        return merge(mergeSort(a),mergeSort(b));
+    }
+
 
 int main(){
-    l1.InsertAtFront(6);
-    l1.InsertAtFront(5);
-    l1.InsertAtFront(4);
-    l1.InsertAtFront(3);
-    l1.InsertAtFront(2);
+    // l1.InsertAtFront(6);
     l1.InsertAtFront(1);
+    //l1.InsertAtFront(4);
+    l1.InsertAtFront(5);
+    // l1.InsertAtFront(10);
+    // l1.InsertAtFront(12);
+    // l1.InsertAtFront(8);
+    //l1.InsertAtFront(15);
+    l1.InsertAtFront(17);
     // l1.InsertAtMiddle(4,3);
     // l1.InsertAtMiddle(6,5);
     // l1.InsertAtEnd(7);
     // l1.InsertAtEnd(8);
     l1.print();
-    l1.alternate_split();
+    // l1.head=l1.kReverse(l1.head,3);
+    // l1.print();
+    // l1.head=l1.kReverse(l1.head,3);
+    // l1.print();
+    // l1.head=l1.kAltReverse(l1.head,3);
+    l1.Segregate();
+    l1.print();
     //l1.print();
     //l1.pairwise_swap();
     //l1.lastTofirst();
