@@ -20,6 +20,9 @@ public:
     friend Node* mergeSort(Node* t1);
     friend void FrontBackSplit(Node* t1,Node** a,Node** b);
     friend Node* mergeAlt(Node* t1,Node* t2,int val);
+    friend Node* quickSort_helper(Node* t1);
+    friend Node* quickSort(Node* t1,Node* end);
+    friend Node* partition(Node* t1,Node** newHead,Node** newEnd);
 };
 
 class LinkedList{
@@ -554,6 +557,38 @@ public:
         }
     }
 
+    Node* insertionSort(){
+        Node* temp=head;
+        Node* tmp;
+        Node* newHead=NULL;
+        while(temp){
+            if(newHead==NULL){
+                newHead=temp;
+                newHead->next=NULL;
+                temp=temp->next;
+            }
+            else{
+                if(newHead->data > temp->data){
+                    tmp=newHead;
+                    newHead=temp;
+                    temp=temp->next;
+                    newHead->next=tmp;
+                }
+                else{
+                    Node* new_temp=newHead;
+                    while(new_temp->next && new_temp->next->data < temp->data)
+                        new_temp=new_temp->next;
+                    tmp=new_temp->next;
+                    new_temp->next=temp;
+                    new_temp=new_temp->next;
+                    temp=temp->next;
+                    new_temp->next=tmp;
+                }
+            }
+        }
+        return newHead;
+    }
+
 };
 
 LinkedList l1,l2,l3;
@@ -680,16 +715,86 @@ LinkedList l1,l2,l3;
         return result;
     }
 
+    Node* partition(Node* t1,Node** newHead,Node** newEnd){
+        Node* pivot=t1;
+        while(pivot->next)
+            pivot=pivot->next;              // point to last element
+
+        Node* tail=pivot;
+        Node* temp=t1;
+
+        *newHead=t1;
+        Node* prev=NULL;
+
+        while(temp!=pivot){
+            if(temp->data > pivot->data){
+                //move to the end
+                if(temp==*newHead)
+                    *newHead=temp->next;
+                Node* newNode=temp;
+                temp=temp->next;
+                tail->next=newNode;
+                if(prev)
+                    prev->next=temp;
+                newNode->next=NULL;
+                tail=newNode;
+            }
+            else{
+                    prev=temp;
+                    temp=temp->next;
+            }
+        }
+        *newEnd=tail;
+
+        return pivot;
+    }
+
+    Node* quickSort(Node* t1,Node* end){
+
+        if(!t1 || t1==end)
+            return t1;
+
+        Node *newHead=NULL,*newEnd=NULL;
+        Node *pivot=partition(t1,&newHead,&newEnd);
+
+        // If pivot is the smallest element - no need to recur for
+        // the left part.
+        if(newHead!=pivot){
+
+            Node* temp=newHead;
+            while(temp->next!=pivot)
+                temp=temp->next;
+            temp->next=NULL;
+            newHead=quickSort(newHead,temp);
+
+            while(temp->next)
+                temp=temp->next;
+            temp->next=pivot;
+        }
+
+        pivot->next=quickSort(pivot->next,newEnd);
+        return newHead;
+    }
+
+    Node* quickSort_helper(Node* head){
+        Node* temp=head;
+        while(temp->next)
+            temp=temp->next;
+        return quickSort(head,temp);
+    }
+
 int main(){
-    l1.InsertAtFront(7);
-    l1.InsertAtFront(6);
     l1.InsertAtFront(5);
+    l1.InsertAtFront(20);
     l1.InsertAtFront(4);
     l1.InsertAtFront(3);
-    l1.InsertAtFront(2);
-    l1.InsertAtFront(1);
+    l1.InsertAtFront(30);
+    //l1.InsertAtFront(2);
+    //l1.InsertAtFront(1);
     l1.print();
-    l1.head=l1.kReverse(l1.head,2);
+    l1.head=l1.insertionSort();
+    //l1.head=quickSort_helper(l1.head);
+    //l1.head=l1.kReverse(l1.head,2);
     //l3.head=mergeAlt(l1.head,l2.head,1);
     //l1.rotate(4);
     //l2.print();
