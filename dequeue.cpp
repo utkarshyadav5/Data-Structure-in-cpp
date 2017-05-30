@@ -115,7 +115,7 @@ int main(){
     cout<<d1.isEmpty()<<endl;
     cout<<d1.isFull()<<endl;
     d1.deleteFront();
-    d1.deleteFront();
+    d1.deleteFront()
     d1.print();
     d1.deleteRear();
     d1.deleteRear();
