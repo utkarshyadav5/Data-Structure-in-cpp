@@ -214,6 +214,59 @@ public:
         cout<<endl;
     }
 
+    bool childrenSum(Node* root){
+        int left_data=0,right_data=0;
+
+        if(root==NULL || (root->left==NULL && root->right==NULL))
+            return true;
+        else{
+            if(root->left!=NULL)
+                left_data=root->left->data;
+
+            if(root->right!=NULL)
+                right_data=root->right->data;
+
+            if((root->data==left_data+right_data) &&
+                childrenSum(root->left) && childrenSum(root->right))
+                return true;
+            else
+                return false;
+        }
+    }
+
+    int diameter(Node* root){
+        if(root==NULL)
+            return 0;
+
+        int option1=diameter(root->left);
+        int option2=diameter(root->right);
+        int option3=1+height(root->left)+height(root->right);
+
+        return max(max(option1,option2),option3);
+    }
+
+    bool isBalanced(Node* root){
+        if(root==NULL)
+            return true;
+
+        int left=height(root->left);
+        int right=height(root->right);
+
+        if(abs(left-right)<=1 && isBalanced(root->left)
+            && isBalanced(root->right))
+            return true;
+
+        return false;
+    }
+
+    bool hasPathSum(Node* root,int sum){
+        if(root==NULL)
+            return (sum==0);
+
+        return (hasPathSum(root->left,sum-root->data)
+            || hasPathSum(root->right,sum-root->data));
+    }
+
 
 int main(){
     Node* root=CreateNode(1);
@@ -222,12 +275,12 @@ int main(){
     root->left->left=CreateNode(4);
     root->left->right=CreateNode(5);
 
-    Node* root2=CreateNode(1);
-    root2->left=CreateNode(2);
-    root2->right=CreateNode(3);
-    root2->left->left=CreateNode(4);
+    Node* root2=CreateNode(10);
+    root2->left=CreateNode(8);
+    root2->right=CreateNode(2);
+    root2->left->left=CreateNode(3);
     root2->left->right=CreateNode(5);
-    root2->left->right->right=CreateNode(6);
+    root2->right->left=CreateNode(2);
 
     PreOrder(root);
     cout<<endl;
@@ -246,7 +299,9 @@ int main(){
     cout<<height(root2)<<endl;
     vector<int> v;
     root2leaf(root,v);
-    printCircular(Tree2List(root));
+    //printCircular(Tree2List(root));
+    cout<<childrenSum(root2)<<endl;
+    cout<<hasPathSum(root,100)<<endl;
     return 0;
 }
 
