@@ -69,7 +69,150 @@ public:
         }
     }
 
+    void InOrderIterative(Node* root){
+        stack<Node*> s;
+        Node* current=root;
 
+        while(1){
+
+            while(current!=NULL){
+                s.push(current);
+                current=current->left;
+            }
+            if(!s.empty() && current==NULL){
+                Node* top=s.top();
+                s.pop();
+                cout<<top->data<<" ";
+                current=top->right;
+            }
+            else
+                break;
+        }
+    }
+
+    void MorrisTraversal(Node* root){
+        Node *current, *pre;
+
+        current=root;
+        while(current){
+            if(current->left==NULL){
+                cout<<current->data<<" ";
+                current=current->right;
+            }
+            else{
+                //find inorder predecessor of current
+                pre=current->left;
+                while(pre->right!=NULL && pre->right!=current)
+                    pre=pre->right;
+
+                if(pre->right==NULL){
+                    pre->right=current;
+                    current=current->left;
+                }
+
+                else{
+                    pre->right=NULL;
+                    cout<<current->data<<" ";
+                    current=current->right;
+                }
+            }
+        }
+    }
+
+    int size(Node* n){
+        if(n==NULL)
+            return 0;
+
+        return 1+size(n->left)+size(n->right);
+    }
+
+    bool identical(Node* root1,Node* root2){
+        if(root1==NULL && root2==NULL)
+            return true;
+
+        else if(root1!=NULL && root2!=NULL)
+            return (root1->data==root2->data && identical(root1->left,root2->left) && identical(root1->right,root2->right));
+        else
+            return false;
+    }
+
+    int height(Node* root){
+        if(root==NULL)
+            return 0;
+
+        return 1+max(height(root->left),height(root->right));
+    }
+
+    void mirror(Node* root){
+        if(root==NULL)
+            return;
+
+        mirror(root->left);
+        mirror(root->right);
+        if(root->left || root->right){
+            Node*temp=root->left;
+            root->left=root->right;
+            root->right=temp;
+        }
+    }
+
+    vector<int>::iterator it;
+
+    void printArray(vector<int> v){
+        for(it=v.begin();it!=v.end();it++)
+            cout<<(*it)<<" ";
+        cout<<endl;
+    }
+
+    void root2leaf(Node* root,vector<int> v){
+        if(root!=NULL)
+            v.push_back(root->data);
+
+        if(root->left==NULL && root->right==NULL)
+            printArray(v);
+        else{
+            root2leaf(root->left,v);
+            root2leaf(root->right,v);
+        }
+    }
+
+    Node* concatenate(Node* leftList,Node* rightList){
+        if(leftList==NULL)
+            return rightList;
+        if(rightList==NULL)
+            return leftList;
+
+        Node* leftLast=leftList->left;
+        Node* rightLast=rightList->left;
+
+        leftLast->right=rightList;
+        rightList->left=leftLast;
+        leftList->left=rightLast;
+        rightLast->right=leftList;
+
+        return leftList;
+    }
+
+    Node* Tree2List(Node* root){
+        if(root==NULL)
+            return NULL;
+
+        Node* left=Tree2List(root->left);
+        Node* right=Tree2List(root->right);
+
+        root->left=root->right=root;
+
+        return concatenate(concatenate(left,root),right);
+    }
+
+    void printCircular(Node* root){
+        Node* temp=root;
+        do{
+            cout<<temp->data<<" ";
+            temp=temp->right;
+        }while(temp!=root);
+        cout<<endl;
+    }
 
 
 int main(){
@@ -78,6 +221,14 @@ int main(){
     root->right=CreateNode(3);
     root->left->left=CreateNode(4);
     root->left->right=CreateNode(5);
+
+    Node* root2=CreateNode(1);
+    root2->left=CreateNode(2);
+    root2->right=CreateNode(3);
+    root2->left->left=CreateNode(4);
+    root2->left->right=CreateNode(5);
+    root2->left->right->right=CreateNode(6);
+
     PreOrder(root);
     cout<<endl;
     InOrder(root);
@@ -85,7 +236,17 @@ int main(){
     PostOrder(root);
     cout<<endl;
     levelOrderPrint(root);
-
+    //InOrderIterative(root);
+    //cout<<endl;
+    MorrisTraversal(root);
+    cout<<endl;
+    cout<<size(root)<<endl;
+    cout<<identical(root,root2)<<endl;
+    cout<<height(root)<<endl;
+    cout<<height(root2)<<endl;
+    vector<int> v;
+    root2leaf(root,v);
+    printCircular(Tree2List(root));
     return 0;
 }
 
