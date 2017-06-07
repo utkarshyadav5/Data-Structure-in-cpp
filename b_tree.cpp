@@ -267,6 +267,33 @@ public:
             || hasPathSum(root->right,sum-root->data));
     }
 
+    int find(int inOrder[],int data){
+        int val=0;
+        for(int i=0;i<6;i++)
+            if(data==inOrder[i])
+                val=i;
+        return val;
+    }
+
+    int current=0;
+
+    Node* buildTree(int inOrder[],int preOrder[],int inStart,int inEnd){
+        if(inStart>inEnd)
+            return NULL;
+
+        Node* root=CreateNode(preOrder[current]);
+        current++;
+        if(inStart==inEnd)
+            return root;
+
+        int inIndex=find(inOrder,root->data);
+
+        root->left=buildTree(inOrder,preOrder,inStart,inIndex-1);
+        root->right=buildTree(inOrder,preOrder,inIndex+1,inEnd);
+
+        return root;
+    }
+
 
 int main(){
     Node* root=CreateNode(1);
@@ -302,6 +329,18 @@ int main(){
     //printCircular(Tree2List(root));
     cout<<childrenSum(root2)<<endl;
     cout<<hasPathSum(root,100)<<endl;
+
+    int inOrder[6],preOrder[6];
+
+    for(int i=0;i<6;i++)
+        cin>>preOrder[i];
+
+    for(int i=0;i<6;i++)
+        cin>>inOrder[i];
+
+    Node* root3=buildTree(inOrder,preOrder,0,5);
+    InOrder(root3);
+    cout<<endl;
     return 0;
 }
 
