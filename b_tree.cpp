@@ -496,21 +496,35 @@ public:
         return old_val+root->data;
     }
 
-    unordered_map<int,int> myMap;
+    // unordered_map<int,int> myMap;
 
-    void verticalSum(Node* root,int dist){
+    // void verticalSum(Node* root,int dist){
+    //     if(root==NULL)
+    //         return;
+
+    //     verticalSum(root->left,dist-1);
+
+    //     if(myMap.find(dist)==myMap.end())
+    //         myMap.insert(make_pair(dist,root->data));
+    //     else
+    //         myMap[dist]=myMap[dist]+root->data;
+
+    //     verticalSum(root->right,dist+1);
+    // }
+
+    int maxSum(Node* root){
+
         if(root==NULL)
-            return;
+            return 0;
 
-        verticalSum(root->left,dist-1);
+        int leftVal=maxSum(root->left);
+        int rightVal=maxSum(root->right);
 
-        if(myMap.find(dist)==myMap.end())
-            myMap.insert(make_pair(dist,root->data));
-        else
-            myMap[dist]=myMap[dist]+root->data;
+        return root->data+max(leftVal,rightVal);
 
-        verticalSum(root->right,dist+1);
     }
+
+
 
 
 int main(){
@@ -520,14 +534,14 @@ int main(){
     root->left->left=CreateNode(4);
     root->left->right=CreateNode(5);
 
-    Node* root2=CreateNode(1);
-    root2->left=CreateNode(2);
-    root2->right=CreateNode(3);
-    root2->left->left=CreateNode(4);
-    root2->left->right=CreateNode(5);
-    root2->right->left=CreateNode(8);
+    Node* root2=CreateNode(10);
+    root2->left=CreateNode(-2);
+    root2->right=CreateNode(7);
+    root2->left->left=CreateNode(8);
+    root2->left->right=CreateNode(-4);
+    //root2->right->left=CreateNode(8);
     //root2->right->right->left=CreateNode(6);
-    root2->left->left->left=CreateNode(7);
+    //root2->left->left->left=CreateNode(7);
 
     PreOrder(root);
     cout<<endl;
@@ -570,9 +584,7 @@ int main(){
     //cout<<level(root,4,1)<<endl;
     //cout<<ancestors(root2,3)<<endl;
 
-    verticalSum(root2,0);
-    for(int i=(-3);i<=2;i++)
-        cout<<i<<" : "<<myMap[i]<<endl;
+    cout<<maxSum(root2)<<endl;
     return 0;
 }
 
