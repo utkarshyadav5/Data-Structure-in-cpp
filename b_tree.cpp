@@ -524,7 +524,77 @@ public:
 
     }
 
+    Node* constructTreefrmpreOrder(int pre[],char preLN[],int *index_ptr,int n){
+        int index=*index_ptr;
 
+        if(index==n)
+            return NULL;
+
+        Node* temp=CreateNode(pre[index]);
+        (*index_ptr)++;
+
+        if(preLN[index]=='N'){
+            temp->left=constructTreefrmpreOrder(pre,preLN,index_ptr,n);
+            temp->right=constructTreefrmpreOrder(pre,preLN,index_ptr,n);
+        }
+        return temp;
+    }
+
+    bool checkComplete(Node* root){
+        if(root==NULL)
+            return true;
+
+        queue<Node* > q;
+        q.push(root);
+        bool flag=false;
+        while(!q.empty()){
+            Node* temp=q.front();
+            q.pop();
+
+            if(temp->left){
+                if(flag)
+                    return false;
+                q.push(temp->left);
+            }
+            else
+                flag=true;
+
+            if(temp->right){
+                if(flag)
+                    return false;
+                q.push(temp->right);
+            }
+            else
+                flag=true;
+        }
+        return true;
+    }
+
+    bool isComplete(Node* root,int index,int number_nodes){
+        if(root==NULL)
+            return true;
+
+        if(index>=number_nodes)
+            return false;
+
+        return (isComplete(root->left,2*index+1,number_nodes) &&
+            isComplete(root->right,2*index+2,number_nodes));
+    }
+
+    void iterativePre(Node* root){
+        stack<Node*> s;
+        s.push(root);
+
+        while(!s.empty()){
+            Node* top=s.top();
+            s.pop();
+            cout<<top->data<<" ";
+            if(top->right)
+                s.push(top->right);
+            if(top->left)
+                s.push(top->left);
+        }
+    }
 
 
 int main(){
@@ -534,14 +604,14 @@ int main(){
     root->left->left=CreateNode(4);
     root->left->right=CreateNode(5);
 
-    Node* root2=CreateNode(10);
-    root2->left=CreateNode(-2);
-    root2->right=CreateNode(7);
-    root2->left->left=CreateNode(8);
-    root2->left->right=CreateNode(-4);
+    Node* root2=CreateNode(1);
+    root2->left=CreateNode(2);
+    root2->right=CreateNode(3);
+    root2->right->left=CreateNode(4);
+    root2->right->right=CreateNode(5);
     //root2->right->left=CreateNode(8);
     //root2->right->right->left=CreateNode(6);
-    //root2->left->left->left=CreateNode(7);
+    root2->left->right=CreateNode(6);
 
     PreOrder(root);
     cout<<endl;
@@ -585,6 +655,10 @@ int main(){
     //cout<<ancestors(root2,3)<<endl;
 
     cout<<maxSum(root2)<<endl;
+    cout<<checkComplete(root)<<endl;
+    cout<<checkComplete(root2)<<endl;
+    iterativePre(root);
+    cout<<endl;
     return 0;
 }
 
