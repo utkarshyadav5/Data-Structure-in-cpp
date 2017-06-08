@@ -595,6 +595,48 @@ public:
                 s.push(top->left);
         }
     }
+    queue<Node*> q;
+    void CompleteBT(Node** root,int data){
+        Node* temp=CreateNode(data);
+
+        if(!*root)
+            *root=temp;
+        else{
+            Node* f=q.front();
+            if(!f->left)
+                f->left=temp;
+            else if(!f->right)
+                f->right=temp;
+
+            if(f && f->left && f->right)
+                q.pop();
+        }
+        q.push(temp);
+    }
+
+    int LSS(Node* root){
+        if(root==NULL)
+            return 0;
+
+        // if(root->lss)
+        //     return root->lss;
+
+        // if(!root->left && !root->right)
+        //     return (root->liss=1);
+
+        int size_excl=LSS(root->left)+LSS(root->right);
+
+        int size_incl=1;
+        if(root->left)
+            size_incl+=LSS(root->left->left)+LSS(root->left->right);
+        if(root->right)
+            size_incl+=LSS(root->right->left)+LSS(root->right->right);
+
+        return max(size_excl,size_incl);
+        // root->lss=max(size_excl,size_incl);
+
+        // return root->liss;
+    }
 
 
 int main(){
@@ -607,11 +649,11 @@ int main(){
     Node* root2=CreateNode(1);
     root2->left=CreateNode(2);
     root2->right=CreateNode(3);
-    root2->right->left=CreateNode(4);
+    root2->left->left=CreateNode(4);
     root2->right->right=CreateNode(5);
-    //root2->right->left=CreateNode(8);
-    //root2->right->right->left=CreateNode(6);
     root2->left->right=CreateNode(6);
+    root2->left->right->left=CreateNode(7);
+    root2->left->right->right=CreateNode(8);
 
     PreOrder(root);
     cout<<endl;
@@ -659,6 +701,12 @@ int main(){
     cout<<checkComplete(root2)<<endl;
     iterativePre(root);
     cout<<endl;
+    Node* root3=NULL;
+    for(int i=1;i<12;i++)
+        CompleteBT(&root3,i);
+    levelOrderPrint(root3);
+
+    cout<<LSS(root2)<<endl;
     return 0;
 }
 
