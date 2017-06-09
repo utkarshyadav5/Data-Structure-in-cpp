@@ -143,6 +143,34 @@ public:
         return 1+max(height(root->left),height(root->right));
     }
 
+    int iterativeHeight(Node* root){
+        if(root==NULL)
+            return 0;
+
+        queue<Node*> q;
+        q.push(root);
+
+        int height=0;
+
+        while(1){
+            int nodeCount=q.size();
+
+            if(nodeCount==0)
+                return height;
+
+            height++;
+            while(nodeCount>0){
+                Node* temp=q.front();
+                q.pop();
+                if(temp->left)
+                    q.push(temp->left);
+                if(temp->right)
+                    q.push(temp->right);
+                nodeCount--;
+            }
+        }
+    }
+
     void mirror(Node* root){
         if(root==NULL)
             return;
@@ -680,6 +708,14 @@ public:
             return false;
     }
 
+    int getDiff(Node* root){
+        if(root==NULL)
+            return 0;
+
+        return root->data-(getDiff(root->left)+getDiff(root->right));
+    }
+
+
 
 int main(){
     Node* root=CreateNode(1);
@@ -687,18 +723,18 @@ int main(){
     root->right=CreateNode(3);
     root->left->left=CreateNode(4);
     root->left->right=CreateNode(5);
-    root->right->left=CreateNode(6);
-    root->left->right->left=CreateNode(7);
-    root->left->right->right=CreateNode(8);
+    // root->right->left=CreateNode(6);
+    // root->left->right->left=CreateNode(7);
+    // root->left->right->right=CreateNode(8);
 
     Node* root2=CreateNode(1);
-    root2->left=CreateNode(3);
+    root2->left=CreateNode(8);
     root2->right=CreateNode(2);
     root2->left->right=CreateNode(6);
     root2->right->left=CreateNode(4);
     root2->right->right=CreateNode(5);
-    root2->right->right->left=CreateNode(8);
-    root2->right->right->right=CreateNode(2);
+    root2->right->right->left=CreateNode(3);
+    root2->right->right->right=CreateNode(9);
 
     // PreOrder(root);
     // cout<<endl;
@@ -739,7 +775,9 @@ int main(){
     //printKDist(root2,2);
     //cout<<endl;
     //cout<<level(root,4,1)<<endl;
-    //cout<<ancestors(root2,3)<<endl;
+    bool val=ancestors(root,5);
+    cout<<endl;
+    cout<<val<<endl;
 
     //cout<<maxSum(root2)<<endl;
     //cout<<checkComplete(root)<<endl;
@@ -755,6 +793,7 @@ int main(){
     //iterativePost1(root);
     //cout<<endl;
     cout<<isIsomorphic(root,root2)<<endl;
+    cout<<getDiff(root)<<endl;
     return 0;
 }
 
