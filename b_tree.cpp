@@ -638,6 +638,48 @@ public:
         // return root->liss;
     }
 
+    void iterativePost1(Node* root){
+
+        if(root==NULL)
+            return;
+        stack<Node*> s;
+
+        do{
+            while(root){
+                if(root->right)
+                    s.push(root->right);
+                s.push(root);
+                root=root->left;
+            }
+
+            root=s.top();
+            s.pop();
+            if(root->right && s.top()==root->right){
+                s.pop();
+                s.push(root);
+                root=root->right;
+            }
+            else{
+                cout<<root->data<<" ";
+                root=NULL;
+            }
+        }while(!s.empty());
+    }
+
+    bool isIsomorphic(Node* root1,Node* root2){
+        if(!root1 && !root2)
+            return true;
+        if(!root1 || !root2)
+            return false;
+
+        if(root1->data==root2->data){
+            return ((isIsomorphic(root1->left,root2->left) && isIsomorphic(root1->right,root2->right))
+                || (isIsomorphic(root1->left,root2->right) && isIsomorphic(root1->right,root2->left)));
+        }
+        else
+            return false;
+    }
+
 
 int main(){
     Node* root=CreateNode(1);
@@ -645,36 +687,39 @@ int main(){
     root->right=CreateNode(3);
     root->left->left=CreateNode(4);
     root->left->right=CreateNode(5);
+    root->right->left=CreateNode(6);
+    root->left->right->left=CreateNode(7);
+    root->left->right->right=CreateNode(8);
 
     Node* root2=CreateNode(1);
-    root2->left=CreateNode(2);
-    root2->right=CreateNode(3);
-    root2->left->left=CreateNode(4);
-    root2->right->right=CreateNode(5);
+    root2->left=CreateNode(3);
+    root2->right=CreateNode(2);
     root2->left->right=CreateNode(6);
-    root2->left->right->left=CreateNode(7);
-    root2->left->right->right=CreateNode(8);
+    root2->right->left=CreateNode(4);
+    root2->right->right=CreateNode(5);
+    root2->right->right->left=CreateNode(8);
+    root2->right->right->right=CreateNode(2);
 
-    PreOrder(root);
-    cout<<endl;
-    InOrder(root);
-    cout<<endl;
-    PostOrder(root);
-    cout<<endl;
-    levelOrderPrint(root);
+    // PreOrder(root);
+    // cout<<endl;
+    // InOrder(root);
+    // cout<<endl;
+    // PostOrder(root);
+    // cout<<endl;
+    // levelOrderPrint(root);
     //InOrderIterative(root);
     //cout<<endl;
-    MorrisTraversal(root);
-    cout<<endl;
-    cout<<size(root)<<endl;
+    // MorrisTraversal(root);
+    // cout<<endl;
+    // cout<<size(root)<<endl;
     //cout<<identical(root,root2)<<endl;
-    cout<<height(root)<<endl;
+    // cout<<height(root)<<endl;
     //cout<<height(root2)<<endl;
-    vector<int> v;
-    root2leaf(root,v);
+    // vector<int> v;
+    // root2leaf(root,v);
     //printCircular(Tree2List(root));
     //cout<<childrenSum(root2)<<endl;
-    cout<<hasPathSum(root,100)<<endl;
+    // cout<<hasPathSum(root,100)<<endl;
 
     // int inOrder[6],preOrder[6];
 
@@ -696,17 +741,20 @@ int main(){
     //cout<<level(root,4,1)<<endl;
     //cout<<ancestors(root2,3)<<endl;
 
-    cout<<maxSum(root2)<<endl;
-    cout<<checkComplete(root)<<endl;
-    cout<<checkComplete(root2)<<endl;
-    iterativePre(root);
-    cout<<endl;
-    Node* root3=NULL;
-    for(int i=1;i<12;i++)
-        CompleteBT(&root3,i);
-    levelOrderPrint(root3);
+    //cout<<maxSum(root2)<<endl;
+    //cout<<checkComplete(root)<<endl;
+    //cout<<checkComplete(root2)<<endl;
+    //iterativePre(root);
+    // cout<<endl;
+    // Node* root3=NULL;
+    // for(int i=1;i<12;i++)
+    //     CompleteBT(&root3,i);
+    // levelOrderPrint(root3);
 
-    cout<<LSS(root2)<<endl;
+    //cout<<LSS(root2)<<endl;
+    //iterativePost1(root);
+    //cout<<endl;
+    cout<<isIsomorphic(root,root2)<<endl;
     return 0;
 }
 
