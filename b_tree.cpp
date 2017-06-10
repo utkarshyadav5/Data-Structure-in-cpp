@@ -715,6 +715,87 @@ public:
         return root->data-(getDiff(root->left)+getDiff(root->right));
     }
 
+    int oddDepth(Node* root,int level){
+        int maxDepth;
+        if(root==NULL)
+            return 0;
+
+        int left=oddDepth(root->left,level+1);
+        int right=oddDepth(root->right,level+1);
+
+        if(level%2)
+            maxDepth=max(max(left,right),level);
+        else
+            maxDepth=max(left,right);
+
+        return maxDepth;
+    }
+
+    bool checkLeaf(Node* root,int level,int *leaflevel){
+        if(root==NULL)
+            return true;
+
+        if(!root->left && !root->right){
+            if(*leaflevel==0){
+                *leaflevel=level;
+                return true;
+            }
+            else
+                return (level==*leaflevel);
+        }
+
+        return checkLeaf(root->left,level+1,leaflevel) &&
+                checkLeaf(root->right,level+1,leaflevel);
+    }
+
+    void leftView(Node* root,int level,int *maxLevel){
+        if(root==NULL)
+            return;
+
+        if(level>(*maxLevel)){
+            cout<<root->data<<" ";
+            *maxLevel=level;
+        }
+        leftView(root->left,level+1,maxLevel);
+        leftView(root->right,level+1,maxLevel);
+    }
+
+    void check(Node* root,int sum){
+        if(root==NULL)
+            return;
+
+        check(root->left,sum+root->data);
+        cout<<sum<<endl;
+        check(root->right,sum+root->data);
+    }
+
+    // bool removeNodes(Node* root,int k){
+    //     int sum;
+    //     if(root==NULL)
+    //         return true;
+
+    //     sum=sum+root->data;
+    //     if(isLeaf(root)){
+    //         if(sum>=k)
+    //             return true;
+    //         else
+    //             return false;
+    //     }
+
+    //     bool left=removeNodes(root->left,k);
+    //     bool right=removeNodes(root->right,k);
+
+    //     if(left==false){
+    //         Node* temp=root->left;
+    //         root->left=NULL;
+    //         delete temp;
+    //     }
+    //     if(right==false){
+    //         Node* temp=root->right;
+    //         root->right=NULL;
+    //         delete temp;
+    //     }
+    // }
 
 
 int main(){
@@ -722,19 +803,21 @@ int main(){
     root->left=CreateNode(2);
     root->right=CreateNode(3);
     root->left->left=CreateNode(4);
-    root->left->right=CreateNode(5);
-    // root->right->left=CreateNode(6);
-    // root->left->right->left=CreateNode(7);
-    // root->left->right->right=CreateNode(8);
+    //root->left->right=CreateNode(5);
+    root->right->right=CreateNode(6);
+    //root->left->right->left=CreateNode(7);
+    //root->left->right->right=CreateNode(8);
 
     Node* root2=CreateNode(1);
-    root2->left=CreateNode(8);
-    root2->right=CreateNode(2);
-    root2->left->right=CreateNode(6);
-    root2->right->left=CreateNode(4);
-    root2->right->right=CreateNode(5);
-    root2->right->right->left=CreateNode(3);
-    root2->right->right->right=CreateNode(9);
+    root2->left=CreateNode(2);
+    root2->right=CreateNode(3);
+    root2->left->left=CreateNode(4);
+    root2->left->right=CreateNode(5);
+    root->left->left->right=CreateNode(8);
+    root2->right->left=CreateNode(6);
+    root2->right->right=CreateNode(7);
+    //root2->right->right->left=CreateNode(3);
+    //root2->right->right->right=CreateNode(9);
 
     // PreOrder(root);
     // cout<<endl;
@@ -775,9 +858,9 @@ int main(){
     //printKDist(root2,2);
     //cout<<endl;
     //cout<<level(root,4,1)<<endl;
-    bool val=ancestors(root,5);
-    cout<<endl;
-    cout<<val<<endl;
+    // bool val=ancestors(root,5);
+    // cout<<endl;
+    // cout<<val<<endl;
 
     //cout<<maxSum(root2)<<endl;
     //cout<<checkComplete(root)<<endl;
@@ -792,8 +875,19 @@ int main(){
     //cout<<LSS(root2)<<endl;
     //iterativePost1(root);
     //cout<<endl;
-    cout<<isIsomorphic(root,root2)<<endl;
-    cout<<getDiff(root)<<endl;
+    // cout<<isIsomorphic(root,root2)<<endl;
+    // cout<<getDiff(root)<<endl;
+
+    // cout<<oddDepth(root,0)<<endl;
+
+    // int leaflevel=0;
+    // cout<<checkLeaf(root,0,&leaflevel)<<endl;
+
+    int maxLevel=(-1);
+    leftView(root2,0,&maxLevel);
+    cout<<endl;
+    int sum=0;
+    check(root,sum);
     return 0;
 }
 
