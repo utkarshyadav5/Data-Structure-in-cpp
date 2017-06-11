@@ -760,64 +760,118 @@ public:
         leftView(root->right,level+1,maxLevel);
     }
 
-    void check(Node* root,int sum){
+    Node* removeNode(Node* root,int sum){
+        if(root==NULL)
+            return NULL;
+
+        root->left=removeNode(root->left,sum-root->data);
+        root->right=removeNode(root->right,sum-root->data);
+
+        if(!root->left && !root->right){
+            if(root->data<sum){
+                delete (root);
+                return NULL;
+            }
+        }
+        return root;
+    }
+
+    Node* extractLeaves(Node* root,Node** head){
+        if(root==NULL)
+            return NULL;
+
+        if(isLeaf(root)){
+            root->right=*head;
+
+            if(*head)
+                (*head)->left=root;
+            *head=root;
+            return NULL;
+        }
+
+        root->right=extractLeaves(root->right,head);
+        root->left=extractLeaves(root->left,head);
+
+        return root;
+    }
+
+    void DeepestLeft(Node* root,int lvl,int *maxlvl,bool isLeft,Node** ptr){
         if(root==NULL)
             return;
 
-        check(root->left,sum+root->data);
-        cout<<sum<<endl;
-        check(root->right,sum+root->data);
+        if(isLeft && isLeaf(root) && lvl>*maxlvl){
+            *ptr=root;
+            *maxlvl=lvl;
+            return;
+        }
+
+        DeepestLeft(root->left,lvl+1,maxlvl,true,ptr);
+        DeepestLeft(root->right,lvl+1,maxlvl,false,ptr);
     }
 
-    // bool removeNodes(Node* root,int k){
-    //     int sum;
-    //     if(root==NULL)
-    //         return true;
+    void sumLeaf(Node* root,int* sum, int* total_sum){
+        if(root==NULL)
+            return;
 
-    //     sum=sum+root->data;
-    //     if(isLeaf(root)){
-    //         if(sum>=k)
-    //             return true;
-    //         else
-    //             return false;
-    //     }
+        int leftSum=(*sum)*10+root->data;
+        int rightSum=leftSum;
 
-    //     bool left=removeNodes(root->left,k);
-    //     bool right=removeNodes(root->right,k);
+        sumLeaf(root->left,&leftSum,total_sum);
+        sumLeaf(root->right,&rightSum,total_sum);
 
-    //     if(left==false){
-    //         Node* temp=root->left;
-    //         root->left=NULL;
-    //         delete temp;
-    //     }
-    //     if(right==false){
-    //         Node* temp=root->right;
-    //         root->right=NULL;
-    //         delete temp;
-    //     }
-    // }
+        if(isLeaf(root)){
+            (*total_sum)=(*total_sum)+leftSum;
+            cout<<*total_sum<<" ";
+        }
+    }
+
+    Node* prev=NULL;
+    void newBT2LL(Node* root,Node** head){
+        if(root==NULL)
+            return;
+
+        newBT2LL(root->left,head);
+        if(!prev)
+            *head=root;
+        else{
+            root->left=prev;
+            prev->right=root;
+        }
+        prev=root;
+        newBT2LL(root->right,head);
+    }
 
 
 int main(){
-    Node* root=CreateNode(1);
-    root->left=CreateNode(2);
-    root->right=CreateNode(3);
-    root->left->left=CreateNode(4);
-    //root->left->right=CreateNode(5);
-    root->right->right=CreateNode(6);
-    //root->left->right->left=CreateNode(7);
-    //root->left->right->right=CreateNode(8);
+    Node* root=CreateNode(6);
+    root->left=CreateNode(3);
+    root->right=CreateNode(5);
+    root->left->left=CreateNode(2);
+    root->left->right=CreateNode(5);
+    root->right->right=CreateNode(4);
+    root->left->right->left=CreateNode(7);
+    root->left->right->right=CreateNode(4);
+    //root->right->right->left=CreateNode(9);
+    //root->right->right->right=CreateNode(10);
 
     Node* root2=CreateNode(1);
     root2->left=CreateNode(2);
     root2->right=CreateNode(3);
+
     root2->left->left=CreateNode(4);
     root2->left->right=CreateNode(5);
-    root->left->left->right=CreateNode(8);
     root2->right->left=CreateNode(6);
     root2->right->right=CreateNode(7);
-    //root2->right->right->left=CreateNode(3);
-    //root2->right->right->right=CreateNode(9);
+
+    root2->left->left->left=CreateNode(8);
+    root2->left->left->right=CreateNode(9);
+    root2->left->right->left=CreateNode(12);
+    root2->right->right->left=CreateNode(10);
+
+    root2->left->left->right->left=CreateNode(13);
+    root2->left->left->right->right=CreateNode(14);
+    root2->left->left->right->right->left=CreateNode(15);
+    root2->right->right->left->right=CreateNode(11);
 
     // PreOrder(root);
     // cout<<endl;
@@ -883,11 +937,26 @@ int main(){
     // int leaflevel=0;
     // cout<<checkLeaf(root,0,&leaflevel)<<endl;
 
-    int maxLevel=(-1);
-    leftView(root2,0,&maxLevel);
-    cout<<endl;
-    int sum=0;
-    check(root,sum);
+    // int maxLevel=(-1);
+    // leftView(root2,0,&maxLevel);
+    // cout<<endl;
+
+    // levelOrderPrint(root2);
+    // root2=removeNode(root2,20);
+    // levelOrderPrint(root2);
+
+    // Node* head=NULL;
+    // root=extractLeaves(root,&head);
+    // levelOrderPrint(root);
+    // while(head){
+    //     cout<<head->data<<" ";
+    //     head=head->right;
+    // }
+    // cout<<endl;
+
+    int sum=0,total_sum=0;
+    sumLeaf(root,&sum,&total_sum);
+    cout<<endl<<total_sum<<endl;
     return 0;
 }
 
