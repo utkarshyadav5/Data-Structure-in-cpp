@@ -841,6 +841,141 @@ public:
         newBT2LL(root->right,head);
     }
 
+    Node* LCA(Node* root,int n1,int n2,bool &v1,bool &v2){
+        if(root==NULL)
+            return NULL;
+
+        if(root->data==n1){
+            v1=true;
+            return root;
+        }
+        if(root->data==n2){
+            v2=true;
+            return root;
+        }
+
+        Node* left_lca=LCA(root->left,n1,n2,v1,v2);
+        Node* right_lca=LCA(root->right,n1,n2,v1,v2);
+
+        if(left_lca && right_lca)
+            return root;
+
+        if(left_lca)
+            return left_lca;
+        else
+            return right_lca;
+    }
+
+    bool find(Node* root,int key){
+        if(root==NULL)
+            return false;
+
+        if(root->data==key || find(root->left,key) || find(root->right,key))
+            return true;
+
+        return false;
+    }
+
+    Node* findLCA(Node* root,int n1,int n2){
+        bool v1=false,v2=false;
+
+        Node* lca=LCA(root,n1,n2,v1,v2);
+        if(v1 && v2 || v1 && find(lca,n2) || v2 && find(lca,n1))
+            return lca;
+        else
+            return NULL;
+    }
+
+    Node* distanceUtil(Node* root,int n1,int n2,int &d1,int &d2,int &dist,int lvl){
+        if(root==NULL)
+            return NULL;
+
+        if(root->data==n1){
+            d1=lvl;
+            return root;
+        }
+        if(root->data==n2){
+            d2=lvl;
+            return root;
+        }
+
+        Node* left_lca=distance(root->left,n1,n2,d1,d2,dist,lvl+1);
+        Node* right_lca=distance(root->right,n1,n2,d1,d2,dist,lvl+1);
+
+        if(left_lca && right_lca){
+            dist=d1+d2-2*lvl;
+            return root;
+        }
+
+        if(left_lca)
+            return left_lca;
+        else
+            return right_lca;
+    }
+
+    int findDistance(Node* root,int n1,int n2){
+        int d1=(-1,d2=(-1));
+        int dist;
+        Node* lca=distanceUtil(root,n1,n2,d1,d2,dist,0);
+
+        if(d1!=-1 && d2!=-1)
+            return dist;
+
+        if(d1!=-1)
+            //dist b/w lca and n2 (i.e., n1 is ancestor of n2 which is lca)
+
+        if(d2!=-1)
+            //dist b/w lca and n2 (i.e., n1 is ancestor of n2 which is lca)
+
+        return -1
+    }
+
+    bool isBalancedUtil(Node* root,int &maxh,int &minh){
+        if(root==NULL){
+            maxh=minh=0;
+            return true;
+        }
+
+        int lmxh,lmnh;
+        int rmxh,rmnh;
+
+        if(isBalancedUtil(root->left,lmxh,lmnh)==false)
+            return false;
+
+        if(isBalancedUtil(root->left,rmxh,rmnh)==false)
+            return false;
+
+        maxh=max(lmxh,rmxh)+1;
+        minh=min(lmnh,rmnh)+1;
+
+        if(maxh<=2*minh)
+            return true;
+
+        return false;
+    }
+
+    void printKDistDown(Node* root,int k){
+        if(root==NULL || k<0)
+            return;
+
+        if(k==0){
+            cout<<root->data<<endl;
+            return;
+        }
+
+        printKDistDown(root->left,k-1);
+        printKDistDown(root->right,k-1);
+    }
+
+    int printKdistanceNode(Node* root,Node* target,int k){
+        if(root==NULL)
+            return -1;
+
+        if(root==target){
+            printKDistDown(root,k);
+            return 0;
+        }
+    }
 
 int main(){
     Node* root=CreateNode(6);
@@ -865,13 +1000,13 @@ int main(){
 
     root2->left->left->left=CreateNode(8);
     root2->left->left->right=CreateNode(9);
-    root2->left->right->left=CreateNode(12);
-    root2->right->right->left=CreateNode(10);
+    // root2->left->right->left=CreateNode(12);
+    // root2->right->right->left=CreateNode(10);
 
-    root2->left->left->right->left=CreateNode(13);
-    root2->left->left->right->right=CreateNode(14);
-    root2->left->left->right->right->left=CreateNode(15);
-    root2->right->right->left->right=CreateNode(11);
+    // root2->left->left->right->left=CreateNode(13);
+    // root2->left->left->right->right=CreateNode(14);
+    // root2->left->left->right->right->left=CreateNode(15);
+    // root2->right->right->left->right=CreateNode(11);
 
     // PreOrder(root);
     // cout<<endl;
@@ -954,9 +1089,15 @@ int main(){
     // }
     // cout<<endl;
 
-    int sum=0,total_sum=0;
-    sumLeaf(root,&sum,&total_sum);
-    cout<<endl<<total_sum<<endl;
+    // int sum=0,total_sum=0;
+    // sumLeaf(root,&sum,&total_sum);
+    // cout<<endl<<total_sum<<endl;
+
+    Node* lca=findLCA(root2,4,2);
+    if(lca)
+        cout<<lca->data<<endl;
+    else
+        cout<<"NULL"<<endl;
     return 0;
 }
 
