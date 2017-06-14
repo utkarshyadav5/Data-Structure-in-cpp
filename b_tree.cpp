@@ -899,8 +899,8 @@ public:
             return root;
         }
 
-        Node* left_lca=distance(root->left,n1,n2,d1,d2,dist,lvl+1);
-        Node* right_lca=distance(root->right,n1,n2,d1,d2,dist,lvl+1);
+        Node* left_lca=distanceUtil(root->left,n1,n2,d1,d2,dist,lvl+1);
+        Node* right_lca=distanceUtil(root->right,n1,n2,d1,d2,dist,lvl+1);
 
         if(left_lca && right_lca){
             dist=d1+d2-2*lvl;
@@ -914,7 +914,7 @@ public:
     }
 
     int findDistance(Node* root,int n1,int n2){
-        int d1=(-1,d2=(-1));
+        int d1=-1,d2=-1;
         int dist;
         Node* lca=distanceUtil(root,n1,n2,d1,d2,dist,0);
 
@@ -927,7 +927,7 @@ public:
         if(d2!=-1)
             //dist b/w lca and n2 (i.e., n1 is ancestor of n2 which is lca)
 
-        return -1
+        return -1;
     }
 
     bool isBalancedUtil(Node* root,int &maxh,int &minh){
@@ -954,28 +954,9 @@ public:
         return false;
     }
 
-    void printKDistDown(Node* root,int k){
-        if(root==NULL || k<0)
-            return;
 
-        if(k==0){
-            cout<<root->data<<endl;
-            return;
-        }
 
-        printKDistDown(root->left,k-1);
-        printKDistDown(root->right,k-1);
-    }
 
-    int printKdistanceNode(Node* root,Node* target,int k){
-        if(root==NULL)
-            return -1;
-
-        if(root==target){
-            printKDistDown(root,k);
-            return 0;
-        }
-    }
 
 int main(){
     Node* root=CreateNode(6);
