@@ -954,19 +954,118 @@ public:
         return false;
     }
 
+    void findExtreme(Node* root,int &max,int &min,int hd){
+        if(root==NULL)
+            return ;
 
+        if(min>hd)
+            min=hd;
+        if(max<hd)
+            max=hd;
 
+        findExtreme(root->left,max,min,hd-1);
+        findExtreme(root->right,max,min,hd+1);
+    }
+
+    void printVertical(Node* root,int lvl,int hd){
+        if(root==NULL)
+            return;
+
+        if(hd==lvl)
+            cout<<root->data<<" ";
+
+        printVertical(root->left,lvl,hd-1);
+        printVertical(root->right,lvl,hd+1);
+    }
+
+    void VerticalOrder(Node* root){
+        int min=0,max=0;
+        findExtreme(root,max,min,0);
+
+        for(int i=min;i<=max;i++){
+            printVertical(root,i,0);
+            cout<<endl;
+        }
+    }
+
+    void printVerticalOrder(Node* root){
+        if(root==NULL)
+            return;
+
+        map<int,vector<int> > myMap;
+        int hd=0;
+
+        queue<pair<Node*,int> > q;
+        q.push(make_pair(root,hd));
+        while(!q.empty()){
+            pair<Node*,int> temp=q.front();
+            q.pop();
+            hd=temp.second;
+            Node* node=temp.first;
+
+            myMap[hd].push_back(node->data);
+
+            if(node->left)
+                q.push(make_pair(node->left,hd-1));
+            if(node->right)
+                q.push(make_pair(node->right,hd+1));
+        }
+
+        map<int,vector<int> >::iterator it;
+        for(it=myMap.begin();it!=myMap.end();it++){
+            for(int i=0;i<it->second.size();i++)
+                cout<<it->second[i]<<" ";
+            cout<<endl;
+        }
+    }
+
+    int maxPathSum(Node* root,int &res){
+        if(root==NULL)
+            return 0;
+
+        if(!root->left && !root->right)
+            return root->data;
+
+        int ls=maxPathSum(root->left,res);
+        int rs=maxPathSum(root->right,res);
+
+        if(root->left && root->right){
+            res=max(res,ls+rs+root->data);
+            return max(ls,rs)+root->data;
+        }
+
+        if(!root->left)
+            return rs+root->data;
+        else
+            return ls+root->data;
+    }
+
+    void reverseAltUtil(Node* root1,Node* root2,int lvl){
+        if(root1==NULL || root2==NULL)
+            return;
+
+        if(lvl%2==0)
+            swap(root1->data,root2->data);
+
+        reverseAltUtil(root1->left,root2->right,lvl+1);
+        reverseAltUtil(root1->right,root2->left,lvl+1);
+    }
+
+    void reverseAtl(Node* root){
+        reverseAltUtil(root->left,root->right,0);
+    }
 
 
 int main(){
-    Node* root=CreateNode(6);
-    root->left=CreateNode(3);
-    root->right=CreateNode(5);
-    root->left->left=CreateNode(2);
+    Node* root=CreateNode(1);
+    root->left=CreateNode(2);
+    root->right=CreateNode(3);
+    root->left->left=CreateNode(4);
     root->left->right=CreateNode(5);
-    root->right->right=CreateNode(4);
-    root->left->right->left=CreateNode(7);
-    root->left->right->right=CreateNode(4);
+    root->right->left=CreateNode(6);
+    root->right->right=CreateNode(7);
+    root->right->left->right=CreateNode(8);
+    root->right->right->right=CreateNode(9);
     //root->right->right->left=CreateNode(9);
     //root->right->right->right=CreateNode(10);
 
@@ -1079,6 +1178,14 @@ int main(){
         cout<<lca->data<<endl;
     else
         cout<<"NULL"<<endl;
+
+    VerticalOrder(root);
+    printVerticalOrder(root);
+
+    int res=INT_MIN;
+    maxPathSum(root,res);
+    cout<<res<<endl;
+
     return 0;
 }
 
