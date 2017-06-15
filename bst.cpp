@@ -209,42 +209,150 @@ Node* deleteNode(Node* root,int key){
 
     //////// ------ IMPORTANT ------ /////////
 
-    struct Info{
-        int size;
-        int max;
-        int min;
-        int ans;
-        bool isBST;
-    };
+    // struct Info{
+    //     int size;
+    //     int max;
+    //     int min;
+    //     int ans;
+    //     bool isBST;
+    // };
 
-    Info largestBST(Node* root){
+    // Info largestBST(Node* root){
+    //     if(root==NULL)
+    //         return {0,INT_MIN,INT_MAX,0,true};
+
+    //     if(!root->left && !root->right)
+    //         return{1,root->data,root->data,1,true};
+
+    //     Info l=largestBST(root->left);
+    //     Info r=largestBST(root->right);
+
+    //     Info ret;
+    //     ret.size=(1+l.size+r.size);
+
+    //     if(l.isBST && r.isBST && l.max<root->data && r.min>root->data){
+    //         ret.max=r.max;
+    //         ret.min=l.min;
+    //         ret.ans=ret.size;
+    //         ret.isBST=true;
+
+    //         return ret;
+    //     }
+
+    //     ret.ans=max(l.ans,r.ans);
+    //     ret.isBST=false;
+
+    //     return ret;
+    // }
+    //////////////////////////////////////////
+
+    int sum=0;
+    void addGreater(Node* root,int &sum){
         if(root==NULL)
-            return {0,INT_MIN,INT_MAX,0,true};
+            return;
 
-        if(!root->left && !root->right)
-            return{1,root->data,root->data,1,true};
+        addGreater(root->right,sum);
+        sum=sum+root->data;
+        root->data=sum;
+        addGreater(root->left,sum);
+    }
 
-        Info l=largestBST(root->left);
-        Info r=largestBST(root->right);
+    Node* removeOutside(Node* root,int min,int max){
+        if(root==NULL)
+            return NULL;
 
-        Info ret;
-        ret.size=(1+l.size+r.size);
+        root->left=removeOutside(root->left,min,max);
+        root->right=removeOutside(root->right,min,max);
 
-        if(l.isBST && r.isBST && l.max<root->data && r.min>root->data){
-            ret.max=r.max;
-            ret.min=l.min;
-            ret.ans=ret.size;
-            ret.isBST=true;
+        if(root->data < min){
+            Node* temp=root->right;
+            delete root;
+            return temp;
+        }
+        if(root->data > max){
+            Node* temp=root->left;
+            delete root;
+            return temp;
+        }
+        return root;
+    }
 
-            return ret;
+    bool hasOnlyOneChild(int pre[],int size){
+        int min,max;
+        if(pre[size-1]>pre[size-2]){
+            max=pre[size-1];
+            min=pre[size-2];
+        }
+        else{
+            max=pre[size-2];
+            min=pre[size-1];
         }
 
-        ret.ans=max(l.ans,r.ans);
-        ret.isBST=false;
-
-        return ret;
+        for(int i=size-3;i>=0;i--){
+            if(pre[i]<min)
+                min=pre[i];
+            else if(pre[i]>max)
+                max=pre[i];
+            else
+                return false;
+        }
+        return true;
     }
-    //////////////////////////////////////////
+
+    Node* pre=NULL;
+    void convert2DLL(Node* root,Node* &head){
+        if(root==NULL)
+            return;
+
+        convert2DLL(root->left,head);
+        if(!pre)
+            head=root;
+        else{
+            root->left=pre;
+            pre->right=root;
+        }
+        pre=root;
+        convert2DLL(root->right,head);
+    }
+
+    void findtail(Node* head,Node *&tail){
+        Node* temp=head;
+
+        while(temp)
+            temp=temp->right;
+        tail=temp;
+    }
+
+    bool isPresent(Node* head,Node* tail,int sum){
+        while(head!=tail){
+            int curr=head->data+tail->data;
+            if(curr==sum)
+                return true;
+            else if(curr<sum)
+                tail=tail->left;
+            else
+                head=head->right;
+        }
+        return false;
+    }
+
+    bool isTripletPresent(Node* root){
+        if(root==NULL)
+            return false;
+
+        Node* head=NULL;
+        convert2DLL(root,head);
+        Node* tail=NULL;
+        findtail(head,tail);
+
+        while((head->right!=tail) && head->data<0){
+            if(isPresent(head->right,tail,-1*head->data))
+                return true;
+            else
+                head=head->right;
+        }
+        return false;
+    }
 
 int main(){
     Node* root=NULL;
@@ -284,7 +392,17 @@ int main(){
     kSmallest(root,l,6);
     cout<<kSmallestusingMorris(root,6)<<endl;
 
-    cout<<(largestBST(root)).ans<<endl;
+    // cout<<(largestBST(root)).ans<<endl;
+    // int sum=0;
+    // addGreater(root,sum);
+    // inOrder(root);
+    // cout<<endl;
+
+    // root=removeOutside(root,10,40);
+    // inOrder(root);
+    // cout<<endl;
+
+    cout<<isTripletPresent(root)<<endl;
     return 0;
 }
 
