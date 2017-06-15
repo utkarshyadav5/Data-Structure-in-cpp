@@ -147,6 +147,105 @@ Node* deleteNode(Node* root,int key){
         return succ;
     }
 
+    void kSmallest(Node* root,int &l,int k){
+        if(root==NULL)
+            return;
+
+        kSmallest(root->left,l,k);
+        if(l==k)
+            cout<<root->data<<endl;
+        l++;
+        kSmallest(root->right,l,k);
+    }
+
+    int kSmallestusingMorris(Node* root,int k){
+        int count=0;
+        int ksmall=INT_MIN;
+
+        Node *curr,*pre;
+        curr=root;
+
+        while(curr){
+
+            if(curr->left==NULL){
+                count++;
+                if(count==k)
+                    ksmall=curr->data;
+                curr=curr->right;
+            }
+
+            else{
+
+                pre=curr->left;
+                while(pre->right!=NULL && pre->right!=curr)
+                    pre=pre->right;
+                if(pre->right==NULL){
+                    pre->right=curr;
+                    curr=curr->left;
+                }
+                else{
+                    pre->right=NULL;
+                    count++;
+                    if(count==k)
+                        ksmall=curr->data;
+                    curr=curr->right;
+                }
+            }
+        }
+        return ksmall;
+    }
+
+    Node* array2BST(int arr[],int start,int end){
+        if(start>end)
+            return NULL;
+
+        int mid=(start+end)/2;
+        Node* root=CreateNode(arr[mid]);
+        root->left=array2BST(arr,start,mid-1);
+        root->right=array2BST(arr,mid+1,end);
+        return root;
+    }
+
+
+    //////// ------ IMPORTANT ------ /////////
+
+    struct Info{
+        int size;
+        int max;
+        int min;
+        int ans;
+        bool isBST;
+    };
+
+    Info largestBST(Node* root){
+        if(root==NULL)
+            return {0,INT_MIN,INT_MAX,0,true};
+
+        if(!root->left && !root->right)
+            return{1,root->data,root->data,1,true};
+
+        Info l=largestBST(root->left);
+        Info r=largestBST(root->right);
+
+        Info ret;
+        ret.size=(1+l.size+r.size);
+
+        if(l.isBST && r.isBST && l.max<root->data && r.min>root->data){
+            ret.max=r.max;
+            ret.min=l.min;
+            ret.ans=ret.size;
+            ret.isBST=true;
+
+            return ret;
+        }
+
+        ret.ans=max(l.ans,r.ans);
+        ret.isBST=false;
+
+        return ret;
+    }
+    //////////////////////////////////////////
+
 int main(){
     Node* root=NULL;
     root=insert(root,50);
@@ -169,18 +268,23 @@ int main(){
     // inOrder(root);
     // cout<<endl;
 
-    cout<<isBST(root)<<endl;
+    // cout<<isBST(root)<<endl;
 
-    Node* temp=lca(root,20,80);
-    cout<<temp->data<<endl;
+    // Node* temp=lca(root,20,80);
+    // cout<<temp->data<<endl;
 
-    temp=lca_iterative(root,20,80);
-    cout<<temp->data<<endl;
+    // temp=lca_iterative(root,20,80);
+    // cout<<temp->data<<endl;
 
-    Node* n=root->left->right;
-    temp=inorderSuccessor(root,n);
-    cout<<temp->data<<endl;
+    // Node* n=root->left->right;
+    // temp=inorderSuccessor(root,n);
+    // cout<<temp->data<<endl;
 
+    int l=1;
+    kSmallest(root,l,6);
+    cout<<kSmallestusingMorris(root,6)<<endl;
+
+    cout<<(largestBST(root)).ans<<endl;
     return 0;
 }
 
