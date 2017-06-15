@@ -90,6 +90,62 @@ Node* deleteNode(Node* root,int key){
     }
     return root;
 }
+    Node* prev=NULL;
+    bool isBST(Node* root){
+        if(root){
+            if(!isBST(root->left))
+                return false;
+
+            if(prev && root->data <= prev->data)
+                return false;
+
+            prev=root;
+            return isBST(root->right);
+        }
+        return true;
+    }
+
+    Node* lca(Node* root,int n1,int n2){
+        if(root==NULL)
+            return NULL;
+
+        if(n1 < root->data && n2 < root->data)
+            return lca(root->left,n1,n2);
+        if(n1 > root->data && n2 > root->data)
+            return lca(root->right,n1,n2);
+
+        return root;
+    }
+
+    Node* lca_iterative(Node* root,int n1,int n2){
+        while(root){
+            if(n1 < root->data && n2 < root->data)
+                root=root->left;
+            else if(n1 > root->data && n2 > root->data)
+                root=root->right;
+            else
+                break;
+        }
+        return root;
+    }
+
+    Node* inorderSuccessor(Node* root,Node* n){
+        if(n->right)
+            return getMin(root->right);
+
+        Node* succ=NULL;
+        while(root){
+            if(n->data < root->data){
+                succ=root;
+                root=root->left;
+            }
+            else if(n->data > root->data)
+                root=root->right;
+            else
+                break;
+        }
+        return succ;
+    }
 
 int main(){
     Node* root=NULL;
@@ -109,9 +165,21 @@ int main(){
     // else
     //     cout<<"Not found"<<endl;
 
-    root=deleteNode(root,50);
-    inOrder(root);
-    cout<<endl;
+    // root=deleteNode(root,50);
+    // inOrder(root);
+    // cout<<endl;
+
+    cout<<isBST(root)<<endl;
+
+    Node* temp=lca(root,20,80);
+    cout<<temp->data<<endl;
+
+    temp=lca_iterative(root,20,80);
+    cout<<temp->data<<endl;
+
+    Node* n=root->left->right;
+    temp=inorderSuccessor(root,n);
+    cout<<temp->data<<endl;
 
     return 0;
 }
