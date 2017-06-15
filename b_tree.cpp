@@ -1055,6 +1055,112 @@ public:
         reverseAltUtil(root->left,root->right,0);
     }
 
+    Node* createThreaded(Node* root){
+        if(root==NULL)
+            return NULL;
+        if(!root->left && !root->right)
+            return root;
+
+        if(root->left){
+            Node* l=createThreaded(root->left);
+
+            l->right=root;
+        }
+
+        if(!root->right)
+            return root;
+
+        return createThreaded(root->right);
+    }
+
+    void topView(Node* root){
+        if(root==NULL)
+            return;
+
+        map<int,int> myMap;
+        queue<pair<Node*,int> > q;
+
+        q.push(make_pair(root,0));
+
+        while(!q.empty()){
+            pair<Node*,int> temp=q.front();
+            q.pop();
+            Node* node=temp.first;
+            int hd=temp.second;
+
+            if(myMap.find(hd)==myMap.end()){
+                myMap.insert(make_pair(hd,node->data));
+                cout<<node->data<<" ";
+            }
+            if(node->left)
+                q.push(make_pair(node->left,hd-1));
+            if(node->right)
+                q.push(make_pair(node->right,hd+1));
+        }
+    }
+
+    map<int,int> myMap;
+    void bottomView(Node* root,int hd){
+        if(root==NULL)
+            return;
+
+        bottomView(root->left,hd-1);
+        bottomView(root->right,hd+1);
+
+        if(myMap.find(hd)==myMap.end()){
+            myMap.insert(make_pair(hd,root->data));
+            cout<<root->data<<" ";
+        }
+    }
+
+    Node* removeHalf(Node* root){
+        if(root==NULL)
+            return NULL;
+
+        root->left=removeHalf(root->left);
+        root->right=removeHalf(root->right);
+
+        if(!root->left && !root->right)
+            return root;
+
+        if(!root->left || !root->right){
+            if(!root->left){
+                Node* temp=root->right;
+                delete root;
+                return temp;
+            }
+            else{
+                Node* temp=root->left;
+                delete root;
+                return temp;
+            }
+        }
+        return root;
+    }
+
+    int vertexCover(Node* root){
+        if(root==NULL)
+            return 0;
+
+        if(isLeaf(root))
+            return 0;
+
+        //for optimizing
+        //if(root->vc!=0)
+        //return root->vc;
+
+        int size_incl=1+vertexCover(root->left)+vertexCover(root->right);
+
+        int size_excl=0;
+        if(root->left)
+            size_excl+=1+vertexCover(root->left->left)+vertexCover(root->left->right);
+        if(root->right)
+            size_excl+=1+vertexCover(root->right->left)+vertexCover(root->right->right);
+
+        //root->vc=min(size_excl,size_incl);
+        //return root->vc;
+        return min(size_excl,size_incl);
+    }
 
 int main(){
     Node* root=CreateNode(1);
@@ -1173,19 +1279,35 @@ int main(){
     // sumLeaf(root,&sum,&total_sum);
     // cout<<endl<<total_sum<<endl;
 
-    Node* lca=findLCA(root2,4,2);
-    if(lca)
-        cout<<lca->data<<endl;
-    else
-        cout<<"NULL"<<endl;
+    // Node* lca=findLCA(root2,4,2);
+    // if(lca)
+    //     cout<<lca->data<<endl;
+    // else
+    //     cout<<"NULL"<<endl;
 
-    VerticalOrder(root);
-    printVerticalOrder(root);
+    // VerticalOrder(root);
+    // printVerticalOrder(root);
 
-    int res=INT_MIN;
-    maxPathSum(root,res);
-    cout<<res<<endl;
+    // int res=INT_MIN;
+    // maxPathSum(root,res);
+    // cout<<res<<endl;
 
+    topView(root);
+    cout<<endl;
+
+    bottomView(root,0);
+    cout<<endl;
+
+    Node *root3 = CreateNode(2);
+    root3->left = CreateNode(7);
+    root3->right = CreateNode(5);
+    root3->left->right = CreateNode(6);
+    root3->left->right->left = CreateNode(1);
+    root3->left->right->right = CreateNode(11);
+    root3->right->right = CreateNode(9);
+    root3->right->right->left =CreateNode(4);
+    root3=removeHalf(root3);
+    levelOrderPrint(root3);
     return 0;
 }
 
