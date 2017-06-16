@@ -430,6 +430,86 @@ Node* deleteNode(Node* root,int key){
         return root;
     }
 
+    // Node* sortedList2BST(Node **head,int n){
+    //     if(n<=0)
+    //         return NULL;
+
+    //     Node* left=sortedList2BST(head,n/2);
+
+    //     Node* root=CreateNode(head->data);
+
+    //     root->left=left;
+    //     *head=(*head)->right;
+
+    //     root->right=sortedList2BST(head,n-n/2-1);
+    //     return root;
+    // }
+
+    bool isPairPresent(Node* root,int target){
+
+        stack <Node*> s1;
+        stack <Node*> s2;
+
+        Node *curr1=root,*curr2=root;
+
+        bool done1=false,done2=false;
+        int val1=0,val2=0;
+
+        while(1){
+
+            while(done1==false){
+
+                if(curr1){
+                    s1.push(curr1);
+                    curr1=curr1->left;
+                }
+                else{
+                    if(s1.empty())
+                        done1=true;
+                    else{
+                        curr1=s1.top();
+                        s1.pop();
+                        val1=curr1->data;
+                        curr1=curr1->right;
+                        done1=true;
+                    }
+                }
+            }
+
+            while(done2==false){
+
+                if(curr2){
+                    s2.push(curr2);
+                    curr2=curr2->right;
+                }
+                else{
+                    if(s2.empty())
+                        done2=true;
+                    else{
+                        curr2=s2.top();
+                        s2.pop();
+                        val2=curr2->data;
+                        curr2=curr2->right;
+                        done2=true;
+                    }
+                }
+            }
+
+            if((val1!=val2) && (val1+val2)==target){
+                cout<<val1<<" "<<val2<<endl;
+                return true;
+            }
+            else if((val1+val2)<target)
+                done1=false;
+            else if((val1+val2)>target)
+                done2=false;
+
+            if(val1>=val2)
+                return false;
+
+        }
+    }
+
 int main(){
     Node* root=NULL;
     root=insert(root,50);
@@ -497,6 +577,8 @@ int main(){
     Node* root3=constructBST(pre,size);
     inOrder(root3);
     cout<<endl;
+
+    isPairPresent(root,110);
     return 0;
 }
 
