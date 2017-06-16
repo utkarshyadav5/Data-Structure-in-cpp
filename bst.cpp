@@ -510,6 +510,73 @@ Node* deleteNode(Node* root,int key){
         }
     }
 
+    void printCommon(Node* root1,Node* root2){
+        stack <Node*> s1,s2;
+
+        while(1){
+            if(root1){
+                s1.push(root1);
+                root1=root1->left;
+            }
+            else if(root2){
+                s2.push(root2);
+                root2=root2->left;
+            }
+            else if(!s.empty() && !s.empty()){
+                root1=s1.top();
+                root2=s2.top();
+
+                if(root1->data==root2->data){
+                    cout<<root1->data<<" ";
+                    s1.pop();
+                    s2.pop();
+                    root1=root1->right;
+                    root2=root2->right;
+                }
+                else if(root1->data < root2->data){
+                    s1.pop();
+                    root1=root1->right;
+                    root2=NULL;
+                }
+                else if(root1->data > root2->data){
+                    s2.pop();
+                    root2=root2->right;
+                    root1=NULL;
+                }
+                else
+                    break;
+            }
+        }
+    }
+
+    vector<Node*> constructTree(int start,int end){
+        vector<Node*> list;
+
+        if(start>end){
+            list.push_back(NULL);
+            return list;
+        }
+
+        for(int i=start;i<=end;i++){
+            vector<Node*> leftSubtree=constructTree(start,i-1);
+            vector<Node*> rightSubtree=constructTree(i+1,end);
+
+            for(j=0;j<leftSubtree.size();j++){
+                Node* left=leftSubtree[j];
+                for(k=0;k<rightSubtree.size();k++){
+                    Node* right=rightSubtree[k];
+                    Node* root=CreateNode(i);
+                    root->left=left;
+                    root->right=right;
+                    list.push_back(root);
+                }
+            }
+        }
+        return list;
+    }
+
+
+
 int main(){
     Node* root=NULL;
     root=insert(root,50);
