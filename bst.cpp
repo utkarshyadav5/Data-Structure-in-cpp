@@ -354,6 +354,82 @@ Node* deleteNode(Node* root,int key){
         return false;
     }
 
+    void swap(int *a,int *b){
+        int temp=*a;
+        *a=*b;
+        *b=temp;
+    }
+
+    void swapNodes(Node* root,Node **first,Node **middle,Node **last,Node **pre){
+        if(root){
+            swapNodes(root->left,first,middle,last,pre);
+
+            if((*pre) && (root->data < (*pre)->data)){
+                if(!*first){
+                    *first=*pre;
+                    *middle=root;
+                }
+                else
+                    *last=root;
+            }
+            *pre=root;
+            swapNodes(root->right,first,middle,last,pre);
+        }
+    }
+
+    void swapNodesUtil(Node* root){
+        Node *first=NULL,*last=NULL,*middle=NULL,*pre=NULL;
+        swapNodes(root,&first,&middle,&last,&pre);
+
+        if(first && last)
+            swap(&(first->data),&(last->data));
+        else
+            swap(&(first->data),&(middle->data));
+    }
+
+    int Ceil(Node* root,int key){
+        if(root==NULL)
+            return -1;
+
+        if(root->data==key)
+            return root->data;
+
+        if(root->data < key)
+            return Ceil(root->right,key);
+
+        int ceil=Ceil(root->left,key);
+        if(ceil>=key)
+            return ceil;
+        else
+            return root->data;
+    }
+
+    Node* constructBST(int pre[],int size){
+        stack <Node*> s;
+        Node* root=CreateNode(pre[0]);
+        s.push(root);
+
+        Node* temp;
+        for(int i=1;i<size;i++){
+            temp=NULL;
+
+            while(!s.empty() && pre[i]>(s.top())->data){
+                temp=s.top();
+                s.pop();
+            }
+
+            if(temp){
+                temp->right=CreateNode(pre[i]);
+                s.push(temp->right);
+            }
+            else{
+                (s.top())->left=CreateNode(pre[i]);
+                s.push((s.top())->left);
+            }
+        }
+        return root;
+    }
+
 int main(){
     Node* root=NULL;
     root=insert(root,50);
@@ -402,7 +478,25 @@ int main(){
     // inOrder(root);
     // cout<<endl;
 
-    cout<<isTripletPresent(root)<<endl;
+    // cout<<isTripletPresent(root)<<endl;
+
+    // Node *root3 = CreateNode(6);
+    // root3->left        = CreateNode(10);
+    // root3->right       = CreateNode(2);
+    // root3->left->left  = CreateNode(1);
+    // root3->left->right = CreateNode(3);
+    // root3->right->right = CreateNode(12);
+    // root3->right->left = CreateNode(7);
+    // swapNodesUtil(root3);
+    // inOrder(root3);
+    // cout<<endl;
+
+    int pre[] = {10, 5, 1, 7, 40, 50};
+    int size = sizeof( pre ) / sizeof( pre[0] );
+
+    Node* root3=constructBST(pre,size);
+    inOrder(root3);
+    cout<<endl;
     return 0;
 }
 
