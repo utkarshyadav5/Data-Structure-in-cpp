@@ -81,6 +81,47 @@ public:
         decreaseKey(i,INT_MIN);
         extractMin();
     }
+
+    //-------------- check whether a BT is heap ---------------//
+
+    // int count(Node* root){
+    //     if(root==NULL)
+    //         return 0;
+
+    //     return (1+count(root->left)+count(root->right));
+    // }
+
+    // bool isComplete(Node* root,int index,int numb_node){
+    //     if(root==NULL)
+    //         return true;
+
+    //     if(index>=numb_node)
+    //         return false;
+
+    //     return (isComplete(root->left,2*index+1,numb_node) &&
+    //         isComplete(root->right,2*index+2,numb_node));
+    // }
+
+    // bool isHeapUtil(Node* root){
+    //     if(!root->left && !root->right)
+    //         return true;
+
+    //     if(!root->right)
+    //         return (root->data >= root->left->data);
+
+    //     if((root->data >= root->left->data) && (root->data >= root->right->data))
+    //         return (isHeapUtil(root->left) && isHeapUtil(root->right));
+    //     else
+    //         return false;
+    // }
+
+    // bool isHeap(Node* root){
+    //     int node_count=count(root);
+
+    //     return (isComplete(root,0,node_count) && isHeapUtil(root))
+    // }
+
+    //---------------------------------------------------------//
 };
 
 int main(){
