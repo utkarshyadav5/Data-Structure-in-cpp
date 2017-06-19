@@ -36,7 +36,7 @@ int maxLen(int arr[],int n){
 }
 
 int main(){
-    int arr[]={1, 0, 0, 1, 0, 1, 1};
-    cout<<maxLen(arr,4)<<endl;
+    int arr[]={1, 0, 0, 0, 0,0, 1, 1};
+    cout<<maxLen(arr,8)<<endl;
     return 0;
 }
