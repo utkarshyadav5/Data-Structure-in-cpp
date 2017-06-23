@@ -3,6 +3,14 @@
 
 using namespace std;
 
+int median(int arr[], int n)
+{
+    if (n%2 == 0)
+        return (arr[n/2] + arr[n/2-1])/2;
+    else
+        return arr[n/2];
+}
+
 int getMedian(int arr1[],int arr2[],int n){
     if(n==0)
         return -1;
@@ -22,16 +30,8 @@ int getMedian(int arr1[],int arr2[],int n){
         return getMedian(arr1+n/2,arr2,n-n/2);
     }
     if (n % 2 == 0)
-        return getMedian(ar2 + n/2 - 1, ar1, n - n/2 + 1);
-    return getMedian(ar2 + n/2, ar1, n - n/2);
-}
-
-int median(int arr[], int n)
-{
-    if (n%2 == 0)
-        return (arr[n/2] + arr[n/2-1])/2;
-    else
-        return arr[n/2];
+        return getMedian(arr1,arr2 + n/2 - 1, n - n/2 + 1);
+    return getMedian(arr1, arr2 + n/2,n - n/2);
 }
 
 
