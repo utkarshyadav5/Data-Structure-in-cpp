@@ -18,7 +18,7 @@ int minJumps(int arr[],int n){
 
         else{
             min=INT_MAX;
-            for(int j=i+1;j<=i+arr[i];j++){
+            for(int j=i+1;j<n && j<=i+arr[i];j++){
                 if(min>jump[j])
                     min=jump[j];
             }
