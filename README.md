@@ -12,3 +12,6 @@ Along with the implementation questions related to these DS given on http://wwww
 * **Heap**   `heap.cpp`
 * **Extra**   
   * Extra contains some questions related to above DS
+* **Greedy Algo** Some questions related to Greedy Algorithm
+* **DP** Some questions related to Dynamic Programming
+* **Array** Some questions related to Array section of GFG
