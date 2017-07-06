@@ -6,7 +6,7 @@ int longestPalSubstr(char *str){
     int max_length=1;
     int low,high;
     int start,end;
-    int len=strlen(str;)
+    int len=strlen(str);
     for(int i=1;i<len;i++){
 
         //for odd
@@ -17,6 +17,7 @@ int longestPalSubstr(char *str){
             if(high-low+1 > max_length){
                 start=low;
                 end=high;
+                max_length=high-low+1;
             }
             low--;
             high++;
@@ -30,6 +31,7 @@ int longestPalSubstr(char *str){
             if(high-low+1 > max_length){
                 start=low;
                 end=high;
+                max_length=high-low+1;
             }
             low--;
             high++;
