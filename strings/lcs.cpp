@@ -18,18 +18,17 @@ void lcsUtil(char *X,char *Y,int m,int n){
 
     int index=L[m][n];
 
-    char *lcs=new char[index+1];
+    char lcs[index+1];
     lcs[index]='\0';
 
     int i=m,j=n;
 
     while(i>0 && j>0){
 
-        if(X[i-1]==Y[j-1]){
+        if(X[i-1] == Y[j-1]){
             lcs[index-1]=X[i-1];
-            i--;
-            j--;
-            index-=1;
+            i--;j--;
+            index--;
         }
         else if(L[i-1][j] > L[i][j-1])
             i--;
