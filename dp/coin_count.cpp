@@ -3,6 +3,8 @@
 
 using namespace std;
 
+// Recursive solution
+
 // int count(int arr[],int size,int money){
 //     if(money==0)
 //         return 1;
@@ -15,40 +17,65 @@ using namespace std;
 //     return count(arr,size-1,money)+count(arr,size,money-arr[size-1]);
 // }
 
-int count( int S[], int m, int n )
-{
-    int i, j, x, y;
+// Tabular method - Bottom to top
 
-    // We need n+1 rows as the table is consturcted in bottom up manner using
-    // the base case 0 value case (n = 0)
-    int table[n+1][m];
+// int count(int arr[],int m,int n){
+//     int dp[m+1][n+1];
 
-    // Fill the enteries for 0 value case (n = 0)
-    for (i=0; i<m; i++)
-        table[0][i] = 1;
+//     for(int i=0;i<=m;i++)
+//         dp[i][0]=1;
 
-    // Fill rest of the table enteries in bottom up manner
-    for (i = 1; i < n+1; i++)
-    {
-        for (j = 0; j < m; j++)
-        {
-            // Count of solutions including S[j]
-            x = (i-S[j] >= 0)? table[i - S[j]][j]: 0;
+//     for(int i=1;i<=n;i++)
+//         dp[0][i]=0;
 
-            // Count of solutions excluding S[j]
-            y = (j >= 1)? table[i][j-1]: 0;
+//     for(int i=1;i<=m;i++){
+//         for(int j=1;j<=n;j++){
+//             dp[i][j]=dp[i-1][j];
+//             if(j-arr[i-1]>=0)
+//                 dp[i][j]+=dp[i][j-arr[i-1]];
+//         }
+//     }
 
-            // total count
-            table[i][j] = x + y;
-        }
+//     for(int i=0;i<=m;i++){
+//         for(int j=0;j<=n;j++)
+//             cout<<dp[i][j]<<" ";
+//         cout<<endl;
+//     }
+
+//     return dp[m][n];
+// }
+
+// Memoization Method
+
+int dp[100][100];
+
+int countUtil(int arr[],int m,int n){
+    if(n<0)
+        return 0;
+
+    if(dp[m][n]==-1){
+        if(n==0)
+            dp[m][n]=1;
+        else if(m==0)
+            dp[m][n]=0;
+        else
+            dp[m][n]=countUtil(arr,m-1,n)+countUtil(arr,m,n-arr[m-1]);
     }
-    for(int i=0;i<n+1;i++){
-        for(int j=0;j<m;j++)
-            cout<<table[i][j]<<" ";
+    return dp[m][n];
+}
+
+int count(int arr[],int m,int n){
+    for(int i=0;i<=m;i++){
+        for(int j=0;j<=n;j++)
+            dp[i][j]=-1;
+    }
+    countUtil(arr,m,n);
+    for(int i=0;i<=m;i++){
+        for(int j=0;j<=n;j++)
+            cout<<dp[i][j]<<" ";
         cout<<endl;
     }
-
-    return table[n][m-1];
+    return dp[m][n];
 }
 
 int main(){
