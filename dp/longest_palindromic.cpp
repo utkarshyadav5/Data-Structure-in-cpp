@@ -19,26 +19,23 @@ using namespace std;
 
 // Tabular Method - Bottom to Top
 
-// wrong
-
 // int lps(char *str){
 //     int n=strlen(str);
 //     int dp[n][n];
 
-//     for(int i=0;i<n;i++){
-//         for(int j=i;j<n;j++){
-//             if(i==j)
-//                 dp[i][j]=1;
-//             else if(j<i)
-//                 dp[i][j]=0;
-//             else{
-//                 if(str[i]==str[j])
-//                     dp[i][j]=2+dp[i+1][j-1];
-//                 else
-//                     dp[i][j]=max(dp[i+1][j],dp[i][j-1]);
-//             }
-//         }
-//     }
+    // for (cl=2; cl<=n; cl++)
+    // {
+    //     for (i=0; i<n-cl+1; i++)
+    //     {
+    //         j = i+cl-1;
+    //         if (str[i] == str[j] && cl == 2)
+    //            L[i][j] = 2;
+    //         else if (str[i] == str[j])
+    //            L[i][j] = L[i+1][j-1] + 2;
+    //         else
+    //            L[i][j] = max(L[i][j-1], L[i+1][j]);
+    //     }
+    // }
 
 //     for(int i=0;i<n;i++){
 //         for(int j=0;j<n;j++)
