@@ -37,7 +37,6 @@ public:
                 if(visited[adj[x][i].second]==false)
                     q.push(adj[x][i]);
             }
-
         }
         cout<<min_cost<<endl;
     }
