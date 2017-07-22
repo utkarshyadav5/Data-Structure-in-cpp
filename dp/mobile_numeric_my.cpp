@@ -49,7 +49,7 @@ void possible(int n,int index,int i,int* data){
 
 int main(){
     int n = 5;
-    int *data=new int[2];
+    int *data=new int[n];
     possible(n,0,-1,data);
     cout<<"Count : "<<cnt<<endl;
     return 0;
