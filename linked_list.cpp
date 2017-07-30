@@ -689,9 +689,7 @@ LinkedList l1,l2,l3;
     Node* mergeSort(Node* t1){
         Node* a;
         Node* b;
-        if(t1==NULL)
-            return NULL;
-        else if(t1->next==NULL)
+        if(t1==NULL || t1->next==NULL)
             return t1;
         FrontBackSplit(t1,&a,&b);
         return merge(mergeSort(a),mergeSort(b));
