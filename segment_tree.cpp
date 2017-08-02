@@ -18,10 +18,10 @@ void build(int arr[],int node,int start,int end){
 
 void update(int node,int start,int end,int l,int r,int val){
     if(lazy[node]!=0){
-        tree[node]+=(end-start+1)*val;
+        tree[node]+=(end-start+1)*lazy[node];
         if(start!=end){
-            lazy[2*node]+=val;
-            lazy[2*node+1]+=val;
+            lazy[2*node]+=lazy[node];
+            lazy[2*node+1]+=lazy[node];
         }
         lazy[node]=0;
     }

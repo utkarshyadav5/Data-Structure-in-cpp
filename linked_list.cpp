@@ -457,7 +457,7 @@ public:
 
         if(slow==fast){
             slow=head;
-            while(slow != fast->next){
+            while(slow->next != fast->next){
                 slow=slow->next;
                 fast=fast->next;
             }
