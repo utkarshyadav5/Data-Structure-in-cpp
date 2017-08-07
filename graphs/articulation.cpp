@@ -34,6 +34,9 @@ public:
         }
     }
 
+    // Rule 1 : if parent is NIL and child>1
+    // Rule 2 : discovery time of vertex <= lowest time of any of its child
+
     void DFS(int u){
         visited[u]=true;
         d_time[u]=low_time[u]=++time;
