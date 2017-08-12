@@ -69,17 +69,24 @@ int query(int node,int start,int end,int l,int r){
 int main(){
     int arr[] = {-1,2,4,1,7,1,3,2};
     int n = sizeof(arr)/sizeof(arr[0]);
-
+    n=n-1;
     // Build segment tree from given array
-    build(arr,0,0,n);
+    build(arr,1,0,n);
 
-    cout<<"Sum of values in given range = "<<query(0,0,n,0,n)<<endl;
+    for(int i=1;i<=2*n+1;i++)
+        cout<<tree[i]<<" ";
+    cout<<endl;
 
-    update(0,0,n,0,3,3);
-    update(0,0,n,0,3,1);
-    update(0,0,n,0,0,2);
+    cout<<"Sum of values in given range = "<<query(1,0,n,0,n)<<endl;
 
-    cout<<"Updated sum of values in given range = "<<query(0,0,n,0,n)<<endl;
+    update(1,0,n,0,3,3);
+    update(1,0,n,0,3,1);
+    update(1,0,n,0,0,2);
+
+    cout<<"Updated sum of values in given range = "<<query(1,0,n,0,n)<<endl;
+    for(int i=1;i<=2*n+1;i++)
+        cout<<tree[i]<<" ";
+    cout<<endl;
 
     return 0;
 }
