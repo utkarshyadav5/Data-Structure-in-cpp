@@ -273,6 +273,29 @@ public:
         return max(max(option1,option2),option3);
     }
 
+    class Pair{
+    public:
+        int height;
+        int diameter;
+    };
+
+    Pair diameter(Node *root){
+        Pair temp;
+
+        if(root==NULL){
+            temp.height=0;
+            temp.diameter=0;
+            return temp;
+        }
+
+        Pair lh=diameter(root->left);
+        Pair rh=diameter(root->right);
+
+        temp.diameter = max(1+lh.height+rh.height,max(lh.diameter,rh.diameter));
+        temp.height = 1+(max(lh.height,rh.height));
+        return temp;
+    }
+
     bool isBalanced(Node* root){
         if(root==NULL)
             return true;
@@ -285,6 +308,31 @@ public:
             return true;
 
         return false;
+    }
+
+    class Pair{
+    public:
+        int height;
+        bool balanced;
+    };
+
+    Pair isBalanced(Node *root){
+        Pair temp;
+
+        if(root==NULL){
+            temp.height=0;
+            temp.balanced=true;
+        }
+
+        Pair p1=isBalanced(root->left);
+        Pair p2=isBalanced(root->right);
+
+        if(abs(p1.height-p2.height)<=1 && p1.balanced && p2.balanced)
+            temp.balanced=true;
+        else
+            temp.balanced=false;
+        temp.height=1+max(p1.height,p2.height);
+        return temp;
     }
 
     bool hasPathSum(Node* root,int sum){

@@ -90,6 +90,7 @@ Node* deleteNode(Node* root,int key){
     }
     return root;
 }
+
     Node* prev=NULL;
     bool isBST(Node* root){
         if(root){
